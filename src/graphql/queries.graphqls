@@ -1,0 +1,53 @@
+query helloWorld{
+    helloWorld
+}
+
+query postsByUser($author: String!){
+    postsForUser(author: $author){
+        id
+        title
+        body
+        author{
+            username
+        }
+        comments{
+            text
+            author{
+                username
+            }
+        }
+    }
+}
+
+query userByUsername($username: String!){
+    userByUsername(username: $username){
+        email
+        username
+        roles
+    }
+}
+
+query allUsers{
+    allUsers{
+        email
+        username
+        roles
+    }
+}
+
+query allPosts{
+    allPosts{
+        id
+        title
+        body
+        author{
+            username
+        }
+        comments{
+            text
+            author{
+                username
+            }
+        }
+    }
+}

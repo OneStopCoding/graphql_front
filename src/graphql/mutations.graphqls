@@ -1,0 +1,40 @@
+mutation login($username: String!, $password: String!){
+    login(
+        username: $username,
+        password: $password
+    )
+}
+
+mutation register($email: String!, $username: String!, $password: String!){
+    register(input:{
+        email: $email,
+        username: $username,
+        password: $password,
+        roles: "ROLE_USER"
+    })
+}
+
+mutation addPost($title: String!, $body: String!){
+    addPost(postIn:{
+        title: $title,
+        body: $body
+    }){
+        title
+        author{
+            username
+        }
+    }
+}
+
+
+mutation addComment($text: String!, $postId: ID!){
+    addComment(commentIn:{
+        text: $text,
+        post: $postId
+    }){
+        title
+        author{
+            username
+        }
+    }
+}
