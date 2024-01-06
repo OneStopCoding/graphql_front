@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import HelloWorld from "./components/HelloWorld";
 import Layout from "./components/common/layout";
 import {Route, Routes} from "react-router-dom";
 import LoginContainer from "./components/login/login";
@@ -10,7 +9,6 @@ import AddPost from "./components/posts/addPost";
 import Register from "./components/login/register";
 import AllUsers from "./components/users/allUser";
 import MyPosts from "./components/posts/myPost";
-import FileUpload from "./utility/fileUpload";
 import AllPosts from "./components/posts/AllPosts";
 import ProfileComponent from "./components/profile/profile";
 

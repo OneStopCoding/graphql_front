@@ -10,6 +10,8 @@ import * as yup from "yup";
 import {mixed} from "yup";
 import {useAddPostMutation} from "../../generated/graphql";
 import axios from "axios";
+import UploadImage from "../../utility/fileuploader";
+import ImageUrls from "../../utility/imageUrls";
 
 const StyledForm = styled('form')({
     display: 'flex',
@@ -41,15 +43,7 @@ const AddPost = () => {
     const [addPost, {data, loading, error}] = useAddPostMutation({
         fetchPolicy: "network-only"
     })
-    const formData = new FormData()
     const images: string  [] = []
-    const UploadImage = async (file: any) => {
-        formData.append("file", file)
-        formData.append("upload_preset", "idy1yyvr")
-        const result = await axios.post('https://api.cloudinary.com/v1_1/dyhr4m8ep/image/upload', formData)
-        return result.data.url
-    }
-
     const navigate = useNavigate()
     const successUrl = '/posts'
 
@@ -68,22 +62,14 @@ const AddPost = () => {
         },
         validationSchema,
         onSubmit: async (values) => {
-            try {
-                console.log(values.images)
-                for (let i = 0; i < values.images.length; i++) {
-                    const url = await UploadImage(values.images[i])
-                    images.push(url)
-                }
+         ImageUrls(values).then(images =>
                 addPost({
                     variables: {
                         title: values.title,
                         body: values.body,
                         images: images
                     }
-                })
-            } catch (error) {
-                console.log(error)
-            }
+                }))
         }
     })
     return (
