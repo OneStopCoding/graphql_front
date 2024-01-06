@@ -41,6 +41,14 @@ const AddPost = () => {
     const [addPost, {data, loading, error}] = useAddPostMutation({
         fetchPolicy: "network-only"
     })
+    const formData = new FormData()
+    const images: string  [] = []
+    const UploadImage = async (file: any) => {
+        formData.append("file", file)
+        formData.append("upload_preset", "idy1yyvr")
+        const result = await axios.post('https://api.cloudinary.com/v1_1/dyhr4m8ep/image/upload', formData)
+        return result.data.url
+    }
 
     const navigate = useNavigate()
     const successUrl = '/posts'
@@ -59,29 +67,20 @@ const AddPost = () => {
             images: []
         },
         validationSchema,
-        onSubmit: (values) => {
-            const formData = new FormData()
-            const images: string  [] = []
+        onSubmit: async (values) => {
             try {
                 console.log(values.images)
-                Array.from(values.images).every(
-                    file => {
-                        formData.append("file", file)
-                        formData.append("upload_preset", "idy1yyvr")
-                        axios.post('https://api.cloudinary.com/v1_1/dyhr4m8ep/image/upload', formData)
-                            .then(result => {
-                                images.push(result.data.url)
-
-                                addPost({
-                                    variables: {
-                                        title: values.title,
-                                        body: values.body,
-                                        images: images
-                                    }
-                                },)
-                            })
+                for (let i = 0; i < values.images.length; i++) {
+                    const url = await UploadImage(values.images[i])
+                    images.push(url)
+                }
+                addPost({
+                    variables: {
+                        title: values.title,
+                        body: values.body,
+                        images: images
                     }
-                )
+                })
             } catch (error) {
                 console.log(error)
             }
