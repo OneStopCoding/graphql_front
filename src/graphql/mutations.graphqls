@@ -29,6 +29,52 @@ mutation addPost($title: String!, $body: String!, $images: [String]){
     }
 }
 
+mutation createProfile($firstname: String!, $lastname: String!, $profilePic: String, $images: [String],
+    $location: [String], $socials: [String], $bio: String){
+    createProfile(profile:{
+        firstname: $firstname
+        lastname: $lastname
+        profilePic: $profilePic
+        images: $images
+        location: $location
+        socials: $socials
+        bio: $bio
+    }){
+          firstname
+          lastname
+          profilePic
+          images
+          user{
+              email
+              username
+              password
+              roles
+          }
+          location{
+              city
+              provence
+              country
+          }
+          socials{
+              website
+              github
+              twitter
+              instagram
+              fb
+          }
+          bio
+    }
+}
+
+mutation sendDm($title: String, $receiver: String, $text: String!, $images: [String]){
+    sendDM(dm:{
+        receiver: $receiver,
+        title: $title,
+        text: $text,
+        images: $images
+    })
+}
+
 mutation addComment($text: String!, $postId: ID!){
     addComment(commentIn:{
         text: $text,

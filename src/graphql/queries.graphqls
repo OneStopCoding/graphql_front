@@ -36,6 +36,34 @@ query allUsers{
     }
 }
 
+query getProfile{
+    getProfile{
+        firstname
+        lastname
+        profilePic
+        images
+        user{
+            email
+            username
+            password
+            roles
+        }
+        location{
+            city
+            provence
+            country
+        }
+        socials{
+            website
+            github
+            twitter
+            instagram
+            fb
+        }
+        bio
+    }
+}
+
 query allPosts{
     allPosts{
         id
