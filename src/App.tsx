@@ -11,6 +11,7 @@ import AllUsers from "./components/users/allUser";
 import MyPosts from "./components/posts/myPost";
 import AllPosts from "./components/posts/AllPosts";
 import ProfileComponent from "./components/profile/profile";
+import CreateProfile from "./components/profile/addProfile";
 
 function App() {
     return (
@@ -19,19 +20,20 @@ function App() {
 
                 <Route index element={<AllPosts/>}/>
                 <Route path="/login" element={<LoginContainer/>}/>
-                <Route path="/register" element={<Register />}/>
+                <Route path="/register" element={<Register/>}/>
                 <Route path="/unauthorized" element={<div>You have no access to this function</div>}/>
-                <Route path="/comments" element={<ProfileComponent />} />
-                <Route path="/posts" element={<PostContainer />}/>
+                <Route path="/comments" element={<ProfileComponent/>}/>
+                <Route path="/posts" element={<PostContainer/>}/>
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN", "ROLE_USER"]}/>}>
-                    <Route path="/add_post" element={<AddPost />}/>
-                   <Route path="/my_posts" element={<MyPosts />}/>
+                    <Route path="/add_post" element={<AddPost/>}/>
+                    <Route path="/my_posts" element={<MyPosts/>}/>
                     <Route path="/logout" element={<LoginContainer/>}/>
+                    <Route path="/create_profile" element={<CreateProfile/>}/>
                 </Route>
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN"]}/>}>
-                    <Route path="/users" element={<AllUsers />}/>
+                    <Route path="/users" element={<AllUsers/>}/>
                 </Route>
             </Route>
         </Routes>

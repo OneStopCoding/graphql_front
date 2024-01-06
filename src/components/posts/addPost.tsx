@@ -5,45 +5,24 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {Alert, Button, TextField} from "@mui/material";
 import Loader from "../common/Loader";
-import {styled} from "@mui/material/styles";
 import * as yup from "yup";
-import {mixed} from "yup";
 import {useAddPostMutation} from "../../generated/graphql";
-import axios from "axios";
-import UploadImage from "../../utility/fileuploader";
 import ImageUrls from "../../utility/imageUrls";
+import ImageValidation from "../../utility/imageValidation";
+import StyledForm from "../common/layout/form";
 
-const StyledForm = styled('form')({
-    display: 'flex',
-    flexDirection: 'column',
-    width: '30%',
-})
+
 
 const validationSchema = yup.object().shape({
     title: yup.string().required("Please enter a title"),
     body: yup.string().required('Please enter a valid text'),
-    images: mixed<FileList>()
-        .test("FILE_SIZE", "Only files up to 10Mb are allowed!!",
-            files =>
-                !files ||
-                files.length === 0 ||
-                Array.from(files).every(file => file.size <= 10_000_000)
-        )
-        .test("FILE_TYPE", "Invalid image format!",
-            files =>
-                !files ||
-                files.length === 0 ||
-                Array.from(files).every(
-                    file => file && ['image/png', 'image/gif', 'image/jpg', ('image/jpeg')].includes(file.type)
-                )
-        )
+    images: ImageValidation
 })
 
 const AddPost = () => {
     const [addPost, {data, loading, error}] = useAddPostMutation({
         fetchPolicy: "network-only"
     })
-    const images: string  [] = []
     const navigate = useNavigate()
     const successUrl = '/posts'
 
