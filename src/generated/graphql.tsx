@@ -30,6 +30,19 @@ export type CommentIn = {
   text: Scalars['String']['input'];
 };
 
+export type Image = {
+  __typename?: 'Image';
+  description?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  uri: Scalars['String']['output'];
+};
+
+export type ImageIn = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  uri: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addComment: Post;
@@ -65,11 +78,13 @@ export type Post = {
   body: Scalars['String']['output'];
   comments: Array<Comment>;
   id: Scalars['ID']['output'];
+  images?: Array<Maybe<Scalars['String']['output']>>;
   title: Scalars['String']['output'];
 };
 
 export type PostIn = {
   body: Scalars['String']['input'];
+  images?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   title: Scalars['String']['input'];
 };
 
@@ -78,8 +93,8 @@ export type Query = {
   allPosts: Array<Maybe<Post>>;
   allUsers: Array<Maybe<User>>;
   helloWorld: Scalars['String']['output'];
-  postsForUser?: Array<Maybe<Post>>;
-  recentPost?: Array<Post>;
+  postsForUser?: Maybe<Array<Maybe<Post>>>;
+  recentPost?: Maybe<Array<Maybe<Post>>>;
   userByUsername?: Maybe<User>;
 };
 
@@ -134,10 +149,11 @@ export type RegisterMutation = { __typename?: 'Mutation', register: string };
 export type AddPostMutationVariables = Exact<{
   title: Scalars['String']['input'];
   body: Scalars['String']['input'];
+  images?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
 }>;
 
 
-export type AddPostMutation = { __typename?: 'Mutation', addPost: { __typename?: 'Post', title: string, author: { __typename?: 'User', username: string } } };
+export type AddPostMutation = { __typename?: 'Mutation', addPost: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string } } };
 
 export type AddCommentMutationVariables = Exact<{
   text: Scalars['String']['input'];
@@ -157,7 +173,7 @@ export type PostsByUserQueryVariables = Exact<{
 }>;
 
 
-export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } } | null> } | null> | null };
+export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } } | null> } | null> | null };
 
 export type UserByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
@@ -174,7 +190,7 @@ export type AllUsersQuery = { __typename?: 'Query', allUsers: Array<{ __typename
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } } | null> } | null> };
+export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } } | null> } | null> };
 
 
 export const LoginDocument = gql`
@@ -245,9 +261,11 @@ export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const AddPostDocument = gql`
-    mutation addPost($title: String!, $body: String!) {
-  addPost(postIn: {title: $title, body: $body}) {
+    mutation addPost($title: String!, $body: String!, $images: [String]) {
+  addPost(postIn: {title: $title, body: $body, images: $images}) {
     title
+    body
+    images
     author {
       username
     }
@@ -271,6 +289,7 @@ export type AddPostMutationFn = Apollo.MutationFunction<AddPostMutation, AddPost
  *   variables: {
  *      title: // value for 'title'
  *      body: // value for 'body'
+ *      images: // value for 'images'
  *   },
  * });
  */
@@ -361,6 +380,7 @@ export const PostsByUserDocument = gql`
     id
     title
     body
+    images
     author {
       username
     }
@@ -495,6 +515,7 @@ export const AllPostsDocument = gql`
     id
     title
     body
+    images
     author {
       username
     }

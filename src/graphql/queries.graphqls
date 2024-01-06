@@ -7,6 +7,7 @@ query postsByUser($author: String!){
         id
         title
         body
+        images
         author{
             username
         }
@@ -40,6 +41,7 @@ query allPosts{
         id
         title
         body
+        images
         author{
             username
         }

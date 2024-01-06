@@ -32,7 +32,7 @@ const AuthProvider: FC<Props> = ({ children}) => {
             })
         }
         setIsLoading(false)
-    },[]);
+    },[user]);
 
     const clearToken =() => {
         localStorage.clear()

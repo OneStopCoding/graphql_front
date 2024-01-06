@@ -29,6 +29,7 @@ const LoginContainer = () => {
 
     const navigate = useNavigate()
 
+    const auth = useAuth()
     const location = useLocation()
     const successUrl = location.state?.from?.pathname ?? '/'
 
@@ -37,9 +38,8 @@ const LoginContainer = () => {
             auth?.saveToken(data.login)
             navigate(successUrl, {replace: true})
         }
-    }, [data])
+    }, [auth, data, navigate, successUrl])
 
-    const auth = useAuth()
 
     const loginForm = useFormik({
         initialValues: {

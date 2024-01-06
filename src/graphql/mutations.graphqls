@@ -14,18 +14,20 @@ mutation register($email: String!, $username: String!, $password: String!){
     })
 }
 
-mutation addPost($title: String!, $body: String!){
+mutation addPost($title: String!, $body: String!, $images: [String]){
     addPost(postIn:{
         title: $title,
-        body: $body
+        body: $body,
+        images: $images
     }){
         title
+        body
+        images
         author{
             username
         }
     }
 }
-
 
 mutation addComment($text: String!, $postId: ID!){
     addComment(commentIn:{

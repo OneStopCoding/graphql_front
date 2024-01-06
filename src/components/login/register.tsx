@@ -31,15 +31,15 @@ const Register = () => {
 
     const location = useLocation()
     const successUrl = location.state?.from?.pathname ?? '/'
-
+    const auth = useAuth()
+    
     useEffect(() => {
         if (data) {
             auth?.saveToken(data.register)
             navigate(successUrl, {replace: true})
         }
-    }, [data])
+    }, [auth, data, navigate, successUrl])
 
-    const auth = useAuth()
 
     const registerForm = useFormik({
         initialValues: {
