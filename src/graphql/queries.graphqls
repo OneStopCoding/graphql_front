@@ -49,9 +49,15 @@ query getProfile{
             roles
         }
         location{
-            city
-            provence
-            country
+            city{
+                name
+            }
+            provence{
+                name
+            }
+            country{
+                name
+            }
         }
         socials{
             website

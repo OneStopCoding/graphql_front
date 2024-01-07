@@ -41,7 +41,7 @@ const AddPost = () => {
         },
         validationSchema,
         onSubmit: async (values) => {
-         ImageUrls(values).then(images =>
+         ImageUrls(values.images).then(images =>
                 addPost({
                     variables: {
                         title: values.title,

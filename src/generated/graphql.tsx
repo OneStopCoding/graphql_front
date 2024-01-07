@@ -17,6 +17,11 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type City = {
+  __typename?: 'City';
+  name: Scalars['ID']['output'];
+};
+
 export type Comment = {
   __typename?: 'Comment';
   author: User;
@@ -28,6 +33,11 @@ export type Comment = {
 export type CommentIn = {
   post: Scalars['ID']['input'];
   text: Scalars['String']['input'];
+};
+
+export type Country = {
+  __typename?: 'Country';
+  name: Scalars['ID']['output'];
 };
 
 export type Dm = {
@@ -61,9 +71,9 @@ export type ImageIn = {
 
 export type Location = {
   __typename?: 'Location';
-  city?: Maybe<Scalars['String']['output']>;
-  country?: Maybe<Scalars['String']['output']>;
-  provence?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<City>;
+  country?: Maybe<Country>;
+  provence?: Maybe<Provence>;
 };
 
 export type LocationIn = {
@@ -151,6 +161,11 @@ export type ProfileIn = {
   location?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   profilePic?: InputMaybe<Scalars['String']['input']>;
   socials?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+export type Provence = {
+  __typename?: 'Provence';
+  name: Scalars['ID']['output'];
 };
 
 export type Query = {
@@ -249,7 +264,7 @@ export type CreateProfileMutationVariables = Exact<{
 }>;
 
 
-export type CreateProfileMutation = { __typename?: 'Mutation', createProfile?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user?: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null, location?: { __typename?: 'Location', city?: string | null, provence?: string | null, country?: string | null } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null } | null };
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user?: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null, location?: { __typename?: 'Location', city?: { __typename?: 'City', name: string } | null, provence?: { __typename?: 'Provence', name: string } | null, country?: { __typename?: 'Country', name: string } | null } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null } | null };
 
 export type SendDmMutationVariables = Exact<{
   title?: InputMaybe<Scalars['String']['input']>;
@@ -296,7 +311,7 @@ export type AllUsersQuery = { __typename?: 'Query', allUsers: Array<{ __typename
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user?: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null, location?: { __typename?: 'Location', city?: string | null, provence?: string | null, country?: string | null } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user?: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null, location?: { __typename?: 'Location', city?: { __typename?: 'City', name: string } | null, provence?: { __typename?: 'Provence', name: string } | null, country?: { __typename?: 'Country', name: string } | null } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null } | null };
 
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -427,9 +442,15 @@ export const CreateProfileDocument = gql`
       roles
     }
     location {
-      city
-      provence
-      country
+      city {
+        name
+      }
+      provence {
+        name
+      }
+      country {
+        name
+      }
     }
     socials {
       website
@@ -731,9 +752,15 @@ export const GetProfileDocument = gql`
       roles
     }
     location {
-      city
-      provence
-      country
+      city {
+        name
+      }
+      provence {
+        name
+      }
+      country {
+        name
+      }
     }
     socials {
       website

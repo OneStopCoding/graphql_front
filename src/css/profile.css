@@ -58,6 +58,19 @@
 table{
     width: 100%;
 }
+
+.details{
+    width: 50%;
+    margin-top: 2%;
+    float: right;
+    text-align: right;
+    margin-right: 15%;
+}
+
+.details_image{
+    padding-left: 10%;
+}
+
 td{
     padding-left: 5%;
     width: 20%;

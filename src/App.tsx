@@ -30,6 +30,7 @@ function App() {
                     <Route path="/my_posts" element={<MyPosts/>}/>
                     <Route path="/logout" element={<LoginContainer/>}/>
                     <Route path="/create_profile" element={<CreateProfile/>}/>
+                    <Route path="/profile" element={<ProfileComponent />}/>
                 </Route>
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN"]}/>}>

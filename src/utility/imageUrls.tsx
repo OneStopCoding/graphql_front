@@ -1,18 +1,18 @@
 import UploadImage from "./fileuploader";
 
-const ImageUrls = async(values: { images: string | any[]; }) =>
+const ImageUrls = async(images: [string] | any[]) =>
 {
-    const images = []
+    const imagesUrls: string[] = []
     try {
-        for (let i = 0; i < values.images.length; i++) {
-            const url = await UploadImage(values.images[i])
-            images.push(url)
+        for (let i = 0; i < images.length; i++) {
+            const url = await UploadImage(images[i][0])
+            imagesUrls.push(url)
         }
-        return images
+        return imagesUrls
     } catch (error) {
         console.log(error)
     }
 
-    return images
+    return imagesUrls
 }
 export default ImageUrls

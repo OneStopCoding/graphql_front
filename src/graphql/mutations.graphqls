@@ -51,9 +51,15 @@ mutation createProfile($firstname: String!, $lastname: String!, $profilePic: Str
               roles
           }
           location{
-              city
-              provence
-              country
+              city{
+                  name
+              }
+              provence{
+                  name
+              }
+              country{
+                  name
+              }
           }
           socials{
               website
