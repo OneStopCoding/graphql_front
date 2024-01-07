@@ -76,6 +76,7 @@ query getProfile{
             title
             text
             images
+            read
         }
     }
 }
@@ -118,6 +119,7 @@ query getProfileByUsername($username: String!){
             title
             text
             images
+            read
         }
     }
 }

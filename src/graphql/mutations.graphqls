@@ -54,6 +54,7 @@ mutation follow($username: String!){
             title
             text
             images
+            read
         }
     }
 }
@@ -124,9 +125,14 @@ mutation createProfile($firstname: String!, $lastname: String!, $profilePic: Str
             title
             text
             images
+            read
         }
           bio
     }
+}
+
+mutation readDM($read: Boolean!){
+    readDM(read: $read)
 }
 
 mutation sendDm($title: String, $receiver: String!, $text: String!, $images: [String]){
@@ -175,6 +181,7 @@ mutation sendDm($title: String, $receiver: String!, $text: String!, $images: [St
             title
             text
             images
+            read
         }
         bio
     }

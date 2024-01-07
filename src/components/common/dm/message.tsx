@@ -1,17 +1,17 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {
     useSendDmMutation
-} from "../../generated/graphql";
-import Loader from "./Loader";
+} from "../../../generated/graphql";
+import Loader from "../Loader";
 import {useEffect} from "react";
 import {FormikProvider, useFormik} from "formik";
-import ImageUrls from "../../utility/imageUrls";
+import ImageUrls from "../../../utility/imageUrls";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import StyledForm from "./layout/form";
+import StyledForm from "../layout/form";
 import {Alert, Button, TextField} from "@mui/material";
 import * as yup from "yup";
-import ImageValidation from "../../utility/imageValidation";
+import ImageValidation from "../../../utility/imageValidation";
 
 const SendDM = () => {
     const validationSchema = yup.object().shape({

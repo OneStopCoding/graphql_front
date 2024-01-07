@@ -1,19 +1,19 @@
-import MyPosts from "../posts/myPost";
-import React, {FC, useCallback} from "react";
-import {Profile} from "../../generated/graphql";
-import {useNavigate} from "react-router-dom";
-import {useAuth} from "../common/AuthProvider";
+import {Dm, Profile, useGetProfileQuery, useReadDmMutation} from "../../../generated/graphql";
+import React, {FC} from "react";
+import MessageComponent from "./component";
+import {useReadQuery} from "@apollo/client";
 
-interface Props{
+interface Props {
     profile: Profile
-    nrOfPosts: number
 }
 
-const ProfileDetails:  FC<Props> = (profile, nrOfPosts) => {
+const MessageContainer: FC<Props> = (profile) => {
+     const [mutation,{data, error, loading}] = useReadDmMutation({
+         fetchPolicy: "network-only",
 
-    const loggedIn = useAuth()?.user?.username.toString() || ""
+     })
+console.log()
     const profilePic = profile.profile.profilePic || ""
-    const navigate = useNavigate()
     const messages = profile.profile.messages || []
     const unRead = []
     for (let i = 0; i < messages.length; i++){
@@ -21,17 +21,13 @@ const ProfileDetails:  FC<Props> = (profile, nrOfPosts) => {
             unRead.push(messages[i])
         }
     }
-
-    const onButtonClickCapture = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-        navigate("/follow/"+profile.profile.user.username)
-        window.location.reload()
-    }, [navigate, profile.profile.user.username]);
-    const sendMessage = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-        loggedIn !== profile.profile.user.username? navigate("/message/"+profile.profile.user.username) : navigate("/DM")
-        window.location.reload()
-    }, [loggedIn, navigate, profile.profile.user.username]);
-
+    mutation({
+        variables: {
+            read: true
+        }
+    }).then()
     return (
+        <>
         <div className="container">
             <div className="main-body">
                 <div className="row gutters-sm">
@@ -50,9 +46,6 @@ const ProfileDetails:  FC<Props> = (profile, nrOfPosts) => {
                                     <div className="mt-3">
                                         <div> &nbsp; &nbsp; Followers: {profile.profile.followers?.length || 0}</div>
                                         <div> &nbsp; &nbsp; Messages: {unRead.length || 0}</div>
-                                        <button className="btn btn-primary"
-                                                onClickCapture={onButtonClickCapture}>Follow</button>
-                                        <button className="btn btn-outline-primary" onClickCapture={sendMessage}>Message</button>
                                     </div>
                                 </div>
                             </div>
@@ -163,36 +156,12 @@ const ProfileDetails:  FC<Props> = (profile, nrOfPosts) => {
                                 <hr/>
                             </div>
                         </div>
-
-                        <div className="row gutters-sm">
-                            <div className="col-sm-6 mb-3">
-                                <div className="card h-100">
-                                    <div className="card-body">
-                                        <h3 className="d-flex align-items-center mb-3"><i
-                                            className="material-icons text-info mr-2">Bio</i></h3>
-                                        <p>{profile.profile.bio}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 mb-3r">
-                                <div className="card h-100">
-                                    <div className="card-body justify-content-around">
-                                        <h3 className="d-flex align-items-center mb-3">
-                                            <i className="material-icons text-info mr-2">Recent Posts</i>
-                                        </h3>
-                                        <MyPosts nrOfPosts={nrOfPosts} username={profile.profile.user.username}/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
+                    </div>
+                    <MessageComponent messages={messages[0] as Dm}/>
                     </div>
                 </div>
-
             </div>
-        </div>
+        </>
     )
 }
-
-export default ProfileDetails
+export default MessageContainer
