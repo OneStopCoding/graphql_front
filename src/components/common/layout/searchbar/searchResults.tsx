@@ -1,4 +1,4 @@
-import {useGetProfileByUsernameQuery} from "../../../../generated/graphql";
+import {Profile, useGetProfileByUsernameQuery} from "../../../../generated/graphql";
 import {useParams} from "react-router-dom";
 import Loader from "../../Loader";
 import ProfileDetails from "../../../profile/profileContainer";
@@ -12,7 +12,7 @@ const SearchResults = () => {
     })
     return <>
         {loading && <Loader open={loading} />}
-        {data?.getProfileByUsername && <ProfileDetails profile={data.getProfileByUsername} nrOfPosts={3} />}
+        {data?.getProfileByUsername && <ProfileDetails profile={data.getProfileByUsername as Profile} nrOfPosts={3} />}
         {error?.message && error.message}
     </>
 }

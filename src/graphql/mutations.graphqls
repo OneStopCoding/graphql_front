@@ -14,6 +14,51 @@ mutation register($email: String!, $username: String!, $password: String!){
     })
 }
 
+mutation follow($username: String!){
+    follow(username: $username){
+        firstname
+        lastname
+        profilePic
+        images
+        user{
+            email
+            username
+            password
+            roles
+        }
+        location{
+            city{
+                name
+            }
+            provence{
+                name
+            }
+            country{
+                name
+            }
+        }
+        socials{
+            website
+            github
+            twitter
+            instagram
+            fb
+        }
+        bio
+        followers{
+            username
+        }
+        messages{
+            sender{username}
+            receiver{username}
+            title
+            text
+            images
+        }
+    }
+}
+
+
 mutation addPost($title: String!, $body: String!, $images: [String]){
     addPost(postIn:{
         title: $title,
@@ -68,11 +113,23 @@ mutation createProfile($firstname: String!, $lastname: String!, $profilePic: Str
               instagram
               fb
           }
+        followers{
+            username
+        }
+        messages{
+            sender{username}
+            receiver{
+                username
+            }
+            title
+            text
+            images
+        }
           bio
     }
 }
 
-mutation sendDm($title: String, $receiver: String, $text: String!, $images: [String]){
+mutation sendDm($title: String, $receiver: String!, $text: String!, $images: [String]){
     sendDM(dm:{
         receiver: $receiver,
         title: $title,

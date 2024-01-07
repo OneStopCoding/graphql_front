@@ -14,6 +14,7 @@ import ProfileComponent from "./components/profile/profile";
 import CreateProfile from "./components/profile/addProfile";
 import {useAuth} from "./components/common/AuthProvider";
 import SearchResults from "./components/common/layout/searchbar/searchResults";
+import Follow from "./components/common/follow";
 
 function App() {
     const authContext = useAuth()
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/searchResults/:username" element={<SearchResults />} />
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN", "ROLE_USER"]}/>}>
+                    <Route path="/follow/:username" element={<Follow />} />
                     <Route path="/add_post" element={<AddPost/>}/>
                     <Route path="/my_posts" element={<MyPosts nrOfPosts={25} username={username}/>}/>
                     <Route path="/logout" element={<LoginContainer/>}/>

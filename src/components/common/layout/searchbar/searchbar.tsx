@@ -1,14 +1,9 @@
 import * as yup from "yup";
-import {useGetProfileByUsernameQuery} from "../../../../generated/graphql";
-import {Link, useLocation, useNavigate} from "react-router-dom";
-import {useAuth} from "../../AuthProvider";
-import {useEffect} from "react";
-import {replace, useFormik} from "formik";
+import { useNavigate} from "react-router-dom";
+import {useFormik} from "formik";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {Alert, Button, TextField} from "@mui/material";
-import Loader from "../../Loader";
-import SearchResults from "./searchResults";
 
 const validationSchema = yup.object({
     username: yup.string().required("Please enter a username")

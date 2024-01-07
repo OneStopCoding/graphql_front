@@ -51,7 +51,7 @@ export type Dm = {
 
 export type DmIn = {
   images?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  receiver?: InputMaybe<Scalars['String']['input']>;
+  receiver: Scalars['String']['input'];
   text: Scalars['String']['input'];
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -71,9 +71,9 @@ export type ImageIn = {
 
 export type Location = {
   __typename?: 'Location';
-  city?: Maybe<City>;
-  country?: Maybe<Country>;
-  provence?: Maybe<Provence>;
+  city: City;
+  country: Country;
+  provence: Provence;
 };
 
 export type LocationIn = {
@@ -86,7 +86,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   addComment: Post;
   addPost: Post;
-  createProfile?: Maybe<Profile>;
+  createProfile: Profile;
+  follow: Profile;
   login: Scalars['String']['output'];
   register: Scalars['String']['output'];
   sendDM?: Maybe<Scalars['String']['output']>;
@@ -94,17 +95,22 @@ export type Mutation = {
 
 
 export type MutationAddCommentArgs = {
-  commentIn?: InputMaybe<CommentIn>;
+  commentIn: CommentIn;
 };
 
 
 export type MutationAddPostArgs = {
-  postIn?: InputMaybe<PostIn>;
+  postIn: PostIn;
 };
 
 
 export type MutationCreateProfileArgs = {
-  profile?: InputMaybe<ProfileIn>;
+  profile: ProfileIn;
+};
+
+
+export type MutationFollowArgs = {
+  username: Scalars['String']['input'];
 };
 
 
@@ -120,7 +126,7 @@ export type MutationRegisterArgs = {
 
 
 export type MutationSendDmArgs = {
-  dm?: InputMaybe<DmIn>;
+  dm: DmIn;
 };
 
 export type Post = {
@@ -198,7 +204,7 @@ export type QueryRecentPostArgs = {
 
 
 export type QueryUserByUsernameArgs = {
-  username?: InputMaybe<Scalars['String']['input']>;
+  username: Scalars['String']['input'];
 };
 
 export type Socials = {
@@ -250,6 +256,13 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register: string };
 
+export type FollowMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+}>;
+
+
+export type FollowMutation = { __typename?: 'Mutation', follow: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text?: string | null, images?: Array<string | null> | null, sender?: { __typename?: 'User', username: string } | null, receiver?: { __typename?: 'User', username: string } | null } | null> | null } };
+
 export type AddPostMutationVariables = Exact<{
   title: Scalars['String']['input'];
   body: Scalars['String']['input'];
@@ -270,11 +283,11 @@ export type CreateProfileMutationVariables = Exact<{
 }>;
 
 
-export type CreateProfileMutation = { __typename?: 'Mutation', createProfile?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user?: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null, location?: { __typename?: 'Location', city?: { __typename?: 'City', name: string } | null, provence?: { __typename?: 'Provence', name: string } | null, country?: { __typename?: 'Country', name: string } | null } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null } | null };
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text?: string | null, images?: Array<string | null> | null, sender?: { __typename?: 'User', username: string } | null, receiver?: { __typename?: 'User', username: string } | null } | null> | null } };
 
 export type SendDmMutationVariables = Exact<{
   title?: InputMaybe<Scalars['String']['input']>;
-  receiver?: InputMaybe<Scalars['String']['input']>;
+  receiver: Scalars['String']['input'];
   text: Scalars['String']['input'];
   images?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>>;
 }>;
@@ -300,7 +313,7 @@ export type PostsByUserQueryVariables = Exact<{
 }>;
 
 
-export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } } | null> } | null> | null };
+export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }> } | null> | null };
 
 export type UserByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
@@ -317,19 +330,19 @@ export type AllUsersQuery = { __typename?: 'Query', allUsers: Array<{ __typename
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user?: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null, location?: { __typename?: 'Location', city?: { __typename?: 'City', name: string } | null, provence?: { __typename?: 'Provence', name: string } | null, country?: { __typename?: 'Country', name: string } | null } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null } | null };
-
-export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } } | null> } | null> };
+export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text?: string | null, images?: Array<string | null> | null, sender?: { __typename?: 'User', username: string } | null, receiver?: { __typename?: 'User', username: string } | null } | null> | null } | null };
 
 export type GetProfileByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
 }>;
 
 
-export type GetProfileByUsernameQuery = { __typename?: 'Query', getProfileByUsername?: { __typename: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city?: { __typename?: 'City', name: string } | null, provence?: { __typename?: 'Provence', name: string } | null, country?: { __typename?: 'Country', name: string } | null } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null } | null };
+export type GetProfileByUsernameQuery = { __typename?: 'Query', getProfileByUsername?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text?: string | null, images?: Array<string | null> | null, sender?: { __typename?: 'User', username: string } | null, receiver?: { __typename?: 'User', username: string } | null } | null> | null } | null };
+
+export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }> } | null> };
 
 
 export const LoginDocument = gql`
@@ -399,6 +412,81 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const FollowDocument = gql`
+    mutation follow($username: String!) {
+  follow(username: $username) {
+    firstname
+    lastname
+    profilePic
+    images
+    user {
+      email
+      username
+      password
+      roles
+    }
+    location {
+      city {
+        name
+      }
+      provence {
+        name
+      }
+      country {
+        name
+      }
+    }
+    socials {
+      website
+      github
+      twitter
+      instagram
+      fb
+    }
+    bio
+    followers {
+      username
+    }
+    messages {
+      sender {
+        username
+      }
+      receiver {
+        username
+      }
+      title
+      text
+      images
+    }
+  }
+}
+    `;
+export type FollowMutationFn = Apollo.MutationFunction<FollowMutation, FollowMutationVariables>;
+
+/**
+ * __useFollowMutation__
+ *
+ * To run a mutation, you first call `useFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useFollowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [followMutation, { data, loading, error }] = useFollowMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useFollowMutation(baseOptions?: Apollo.MutationHookOptions<FollowMutation, FollowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<FollowMutation, FollowMutationVariables>(FollowDocument, options);
+      }
+export type FollowMutationHookResult = ReturnType<typeof useFollowMutation>;
+export type FollowMutationResult = Apollo.MutationResult<FollowMutation>;
+export type FollowMutationOptions = Apollo.BaseMutationOptions<FollowMutation, FollowMutationVariables>;
 export const AddPostDocument = gql`
     mutation addPost($title: String!, $body: String!, $images: [String]) {
   addPost(postIn: {title: $title, body: $body, images: $images}) {
@@ -472,6 +560,20 @@ export const CreateProfileDocument = gql`
       instagram
       fb
     }
+    followers {
+      username
+    }
+    messages {
+      sender {
+        username
+      }
+      receiver {
+        username
+      }
+      title
+      text
+      images
+    }
     bio
   }
 }
@@ -509,7 +611,7 @@ export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfile
 export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
 export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
 export const SendDmDocument = gql`
-    mutation sendDm($title: String, $receiver: String, $text: String!, $images: [String]) {
+    mutation sendDm($title: String, $receiver: String!, $text: String!, $images: [String]) {
   sendDM(dm: {receiver: $receiver, title: $title, text: $text, images: $images})
 }
     `;
@@ -783,6 +885,20 @@ export const GetProfileDocument = gql`
       fb
     }
     bio
+    followers {
+      username
+    }
+    messages {
+      sender {
+        username
+      }
+      receiver {
+        username
+      }
+      title
+      text
+      images
+    }
   }
 }
     `;
@@ -818,6 +934,88 @@ export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
 export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
 export type GetProfileSuspenseQueryHookResult = ReturnType<typeof useGetProfileSuspenseQuery>;
 export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
+export const GetProfileByUsernameDocument = gql`
+    query getProfileByUsername($username: String!) {
+  getProfileByUsername(username: $username) {
+    firstname
+    lastname
+    profilePic
+    images
+    user {
+      email
+      username
+      password
+      roles
+    }
+    location {
+      city {
+        name
+      }
+      provence {
+        name
+      }
+      country {
+        name
+      }
+    }
+    socials {
+      website
+      github
+      twitter
+      instagram
+      fb
+    }
+    bio
+    followers {
+      username
+    }
+    messages {
+      sender {
+        username
+      }
+      receiver {
+        username
+      }
+      title
+      text
+      images
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProfileByUsernameQuery__
+ *
+ * To run a query within a React component, call `useGetProfileByUsernameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProfileByUsernameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProfileByUsernameQuery({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useGetProfileByUsernameQuery(baseOptions: Apollo.QueryHookOptions<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>(GetProfileByUsernameDocument, options);
+      }
+export function useGetProfileByUsernameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>(GetProfileByUsernameDocument, options);
+        }
+export function useGetProfileByUsernameSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>(GetProfileByUsernameDocument, options);
+        }
+export type GetProfileByUsernameQueryHookResult = ReturnType<typeof useGetProfileByUsernameQuery>;
+export type GetProfileByUsernameLazyQueryHookResult = ReturnType<typeof useGetProfileByUsernameLazyQuery>;
+export type GetProfileByUsernameSuspenseQueryHookResult = ReturnType<typeof useGetProfileByUsernameSuspenseQuery>;
+export type GetProfileByUsernameQueryResult = Apollo.QueryResult<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>;
 export const AllPostsDocument = gql`
     query allPosts {
   allPosts {
@@ -869,71 +1067,3 @@ export type AllPostsQueryHookResult = ReturnType<typeof useAllPostsQuery>;
 export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery>;
 export type AllPostsSuspenseQueryHookResult = ReturnType<typeof useAllPostsSuspenseQuery>;
 export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
-export const GetProfileByUsernameDocument = gql`
-    query getProfileByUsername($username: String!) {
-  getProfileByUsername(username: $username) {
-    firstname
-    lastname
-    profilePic
-    images
-    user {
-      email
-      username
-      password
-      roles
-    }
-    location {
-      city {
-        name
-      }
-      provence {
-        name
-      }
-      country {
-        name
-      }
-    }
-    socials {
-      website
-      github
-      twitter
-      instagram
-      fb
-    }
-    bio
-  }
-}
-    `;
-
-/**
- * __useGetProfileByUsernameQuery__
- *
- * To run a query within a React component, call `useGetProfileByUsernameQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProfileByUsernameQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProfileByUsernameQuery({
- *   variables: {
- *      username: // value for 'username'
- *   },
- * });
- */
-export function useGetProfileByUsernameQuery(baseOptions: Apollo.QueryHookOptions<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>(GetProfileByUsernameDocument, options);
-      }
-export function useGetProfileByUsernameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>(GetProfileByUsernameDocument, options);
-        }
-export function useGetProfileByUsernameSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>(GetProfileByUsernameDocument, options);
-        }
-export type GetProfileByUsernameQueryHookResult = ReturnType<typeof useGetProfileByUsernameQuery>;
-export type GetProfileByUsernameLazyQueryHookResult = ReturnType<typeof useGetProfileByUsernameLazyQuery>;
-export type GetProfileByUsernameSuspenseQueryHookResult = ReturnType<typeof useGetProfileByUsernameSuspenseQuery>;
-export type GetProfileByUsernameQueryResult = Apollo.QueryResult<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>;
