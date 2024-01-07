@@ -9,11 +9,16 @@ interface  Props{
     post: Post
 }
 
+
 const PostItem: FC<Props> = ({post}) =>{
     const [showComments, setShowComments] = useState(false)
 const [addComment, {data, loading, error}] = useAddCommentMutation(({
     fetchPolicy: "network-only"
 }));
+    const imageUri: string[] = []
+    if (post.images && post.images.length > 0){
+        post.images.map(image => imageUri.push(image))
+    }
 
     useEffect(() => {
         if (data){
@@ -42,6 +47,8 @@ const [addComment, {data, loading, error}] = useAddCommentMutation(({
                     {post.comments && post.comments.length > 0? showComments ? 'Hide Comments' : 'Show Comments' : 'No Comments'}
                 </Button>
             </CardActions>
+            <p>{imageUri.length > 0 && imageUri.map(image => <img src={image} alt="" />) }</p>
+
             <AddComment onSubmit={comment => {
                 addComment({
                     variables: {

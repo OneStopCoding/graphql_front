@@ -8,6 +8,8 @@ interface Props{
     post: Post[];
 }
 
+
+
 const PostTable : FC<Props> = ( {post} ) => {
     return (
         <Box>

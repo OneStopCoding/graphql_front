@@ -9,7 +9,6 @@ import AddPost from "./components/posts/addPost";
 import Register from "./components/login/register";
 import AllUsers from "./components/users/allUser";
 import MyPosts from "./components/posts/myPost";
-import AllPosts from "./components/posts/AllPosts";
 import ProfileComponent from "./components/profile/profile";
 import CreateProfile from "./components/profile/addProfile";
 import {useAuth} from "./components/common/AuthProvider";
@@ -25,7 +24,7 @@ function App() {
         <Routes>
             <Route path={"/"} element={<Layout/>}>
 
-                <Route index element={<AllPosts/>}/>
+                <Route index element={<PostContainer/>}/>
                 <Route path="/login" element={<LoginContainer/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/unauthorized" element={<div>You have no access to this function</div>}/>

@@ -42,7 +42,7 @@ export type Country = {
 
 export type Dm = {
   __typename?: 'DM';
-  images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  images?: Maybe<Array<Scalars['String']['output']>>;
   read: Scalars['Boolean']['output'];
   receiver: User;
   sender: User;
@@ -142,7 +142,7 @@ export type Post = {
   body: Scalars['String']['output'];
   comments: Array<Comment>;
   id: Scalars['ID']['output'];
-  images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  images?: Maybe<Array<Scalars['String']['output']>>;
   title: Scalars['String']['output'];
 };
 
