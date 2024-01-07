@@ -11,7 +11,6 @@ const Follow = () => {
     follow({variables: {
         username: param
     }}).then()
-    console.log(JSON.stringify(data))
     return <>
         {loading && <Loader open={loading} />}
         {data?.follow && <ProfileDetails profile={data.follow as Profile} nrOfPosts={3} />}

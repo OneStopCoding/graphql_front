@@ -1,7 +1,7 @@
 import MyPosts from "../posts/myPost";
 import React, {FC, useCallback} from "react";
 import {Profile} from "../../generated/graphql";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 interface Props{
     profile: Profile
@@ -13,7 +13,12 @@ const ProfileDetails:  FC<Props> = (profile, nrOfPosts) => {
     const navigate = useNavigate()
 
     const onButtonClickCapture = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-        navigate("/follow/"+profile.profile.user.username, {replace: true})
+        navigate("/follow/"+profile.profile.user.username)
+        window.location.reload()
+    }, [navigate, profile.profile.user.username]);
+    const sendMessage = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+        navigate("/message/"+profile.profile.user.username)
+        window.location.reload()
     }, [navigate, profile.profile.user.username]);
 
     return (
@@ -37,7 +42,7 @@ const ProfileDetails:  FC<Props> = (profile, nrOfPosts) => {
                                         <div> &nbsp; &nbsp; Messages: {profile.profile.messages?.length || 0}</div>
                                         <button className="btn btn-primary"
                                                 onClickCapture={onButtonClickCapture}>Follow</button>
-                                        <button className="btn btn-outline-primary">Message</button>
+                                        <button className="btn btn-outline-primary" onClickCapture={sendMessage}>Message</button>
                                     </div>
                                 </div>
                             </div>

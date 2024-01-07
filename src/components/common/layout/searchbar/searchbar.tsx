@@ -21,7 +21,7 @@ const searchForm = useFormik({
         },
         validationSchema,
         onSubmit: (values) => {
-            navigate("/searchResults/" + values.username, {replace: true})
+            navigate("/search/" + values.username, {replace: true})
 
         }
     })
