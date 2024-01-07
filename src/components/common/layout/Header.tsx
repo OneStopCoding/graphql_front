@@ -13,6 +13,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import RegisterIcon from '@mui/icons-material/HowToReg'
 import {Link} from "react-router-dom";
 import {useAuth} from "../AuthProvider";
+import SearchBar from "./searchbar/searchbar";
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -76,6 +77,7 @@ const Header: FC<Props> = ({open, handleDrawerOpen}) => {
                         <Typography variant="h6" noWrap component="div">
                             One Stop Coding Forum
                         </Typography>
+
                         <Box>
                             {authContext?.user == null ? (
                                 <>

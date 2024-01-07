@@ -2,8 +2,8 @@ import React, {FC, useEffect, useState} from "react";
 import {Button, Card, CardActionArea, CardActions, CardContent, Divider} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {Post, useAddCommentMutation} from "../../generated/graphql";
-import CommentList from "../common/comments/CommentList";
-import AddComment from "../common/comments/addComment";
+import CommentList from "./comments/CommentList";
+import AddComment from "./comments/addComment";
 
 interface  Props{
     post: Post

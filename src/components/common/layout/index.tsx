@@ -12,6 +12,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {Link, Outlet} from "react-router-dom";
 import AddPostIcon from "@mui/icons-material/PostAdd"
 import {Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import SearchBar from "./searchbar/searchbar";
 
 const drawerWidth = 240
 
@@ -110,6 +111,9 @@ const Layout: React.FC<{}> = () => {
                     </IconButton>
                 </DrawerHeader>
                 <Divider/>
+
+                        <SearchBar />
+                  <Divider />
                 <List>
                     {drawerOptions.map((option) => (
                         <ListItem key={option.text} disablePadding>

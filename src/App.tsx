@@ -13,6 +13,7 @@ import AllPosts from "./components/posts/AllPosts";
 import ProfileComponent from "./components/profile/profile";
 import CreateProfile from "./components/profile/addProfile";
 import {useAuth} from "./components/common/AuthProvider";
+import SearchResults from "./components/common/layout/searchbar/searchResults";
 
 function App() {
     const authContext = useAuth()
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/unauthorized" element={<div>You have no access to this function</div>}/>
                 <Route path="/comments" element={<ProfileComponent/>}/>
                 <Route path="/posts" element={<PostContainer/>}/>
+                <Route path="/searchResults/:username" element={<SearchResults />} />
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN", "ROLE_USER"]}/>}>
                     <Route path="/add_post" element={<AddPost/>}/>
