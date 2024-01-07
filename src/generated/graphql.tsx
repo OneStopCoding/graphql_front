@@ -142,7 +142,7 @@ export type PostIn = {
 export type Profile = {
   __typename?: 'Profile';
   bio?: Maybe<Scalars['String']['output']>;
-  firstname?: Maybe<Scalars['String']['output']>;
+  firstname?: Scalars['String']['output'];
   followers?: Maybe<Array<Maybe<User>>>;
   images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   lastname?: Maybe<Scalars['String']['output']>;
@@ -150,7 +150,7 @@ export type Profile = {
   messages?: Maybe<Array<Maybe<Dm>>>;
   profilePic?: Maybe<Scalars['String']['output']>;
   socials?: Maybe<Socials>;
-  user?: Maybe<User>;
+  user: User;
 };
 
 export type ProfileIn = {

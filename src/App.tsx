@@ -12,8 +12,11 @@ import MyPosts from "./components/posts/myPost";
 import AllPosts from "./components/posts/AllPosts";
 import ProfileComponent from "./components/profile/profile";
 import CreateProfile from "./components/profile/addProfile";
+import {useAuth} from "./components/common/AuthProvider";
 
 function App() {
+    const authContext = useAuth()
+    const username = authContext?.user?.username? authContext.user.username.toString() : ""
     return (
         <Routes>
             <Route path={"/"} element={<Layout/>}>
@@ -27,7 +30,7 @@ function App() {
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN", "ROLE_USER"]}/>}>
                     <Route path="/add_post" element={<AddPost/>}/>
-                    <Route path="/my_posts" element={<MyPosts/>}/>
+                    <Route path="/my_posts" element={<MyPosts nrOfPosts={25} username={username}/>}/>
                     <Route path="/logout" element={<LoginContainer/>}/>
                     <Route path="/create_profile" element={<CreateProfile/>}/>
                     <Route path="/profile" element={<ProfileComponent />}/>

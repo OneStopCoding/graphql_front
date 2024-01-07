@@ -1,22 +1,23 @@
 import {Post, usePostsByUserQuery} from "../../generated/graphql";
 
-import React from "react";
-import {useAuth} from "../common/AuthProvider";
+import React, {FC} from "react";
 import DisplayPosts from "./DisplayPosts";
-
-const MyPosts  = () => {
-    const authContext = useAuth()
-
+interface Props{
+    nrOfPosts: number
+    username: string
+}
+console.log()
+const MyPosts:FC<Props>  = (props) => {
     const {data, error, loading} = usePostsByUserQuery({
         variables: {
-            author: authContext?.user? authContext.user.username.toString() : ""
+            author: props.username
         }
     })
     return (
         <div>
             {loading && <div>Loading...</div>}
             {error && <div>Error!</div>}
-            {data && <DisplayPosts key="myPosts" post={data.postsForUser as Post[]} />}
+            {data && <DisplayPosts key="myPosts" post={data.postsForUser?.slice(0, 3) as Post[]} />}
         </div>
     )
 }
