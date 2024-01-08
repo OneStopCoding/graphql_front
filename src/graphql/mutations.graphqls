@@ -86,34 +86,34 @@ mutation createProfile($firstname: String!, $lastname: String!, $profilePic: Str
         socials: $socials
         bio: $bio
     }){
-          firstname
-          lastname
-          profilePic
-          images
-          user{
-              email
-              username
-              password
-              roles
-          }
-          location{
-              city{
-                  name
-              }
-              provence{
-                  name
-              }
-              country{
-                  name
-              }
-          }
-          socials{
-              website
-              github
-              twitter
-              instagram
-              fb
-          }
+        firstname
+        lastname
+        profilePic
+        images
+        user{
+            email
+            username
+            password
+            roles
+        }
+        location{
+            city{
+                name
+            }
+            provence{
+                name
+            }
+            country{
+                name
+            }
+        }
+        socials{
+            website
+            github
+            twitter
+            instagram
+            fb
+        }
         followers{
             username
         }
@@ -127,12 +127,8 @@ mutation createProfile($firstname: String!, $lastname: String!, $profilePic: Str
             images
             read
         }
-          bio
+        bio
     }
-}
-
-mutation readDM($read: Boolean!){
-    readDM(read: $read)
 }
 
 mutation sendDm($title: String, $receiver: String!, $text: String!, $images: [String]){
@@ -195,6 +191,131 @@ mutation addComment($text: String!, $postId: ID!){
         title
         author{
             username
+        }
+    }
+}
+
+mutation deleteComment($id: ID!){
+    deleteComment(id: $id)
+}
+
+mutation deletePost($id: ID!){
+    deletePost(id: $id)
+}
+
+mutation deleteDM($id: ID!){
+    deleteDM(id: $id)
+}
+
+mutation deleteUser($id: ID!){
+    deleteUser(id: $id){
+        email
+        username
+        roles
+    }
+}
+
+mutation unFollow($username: String!){
+    unFollow(username: $username){
+        firstname
+        lastname
+        profilePic
+        images
+        user{
+            email
+            username
+            password
+            roles
+        }
+        location{
+            city{
+                name
+            }
+            provence{
+                name
+            }
+            country{
+                name
+            }
+        }
+        socials{
+            website
+            github
+            twitter
+            instagram
+            fb
+        }
+        followers{
+            username
+        }
+        messages{
+            sender{username}
+            receiver{
+                username
+            }
+            title
+            text
+            images
+            read
+        }
+        bio
+    }
+}
+
+mutation like($id: ID!){
+    like(id: $id){
+        title
+        body
+        images
+        author{
+            username
+        }
+        comments{
+            text
+            author{
+                username
+            }
+            likes{
+                email
+                username
+                password
+                roles
+            }
+        }
+        likes{
+            email
+            username
+            password
+            roles
+        }
+    }
+}
+
+mutation unLike($id: ID!){
+    unLike(id: $id){
+        title
+        body
+        images
+        author{
+            username
+        }
+        comments{
+            text
+            author{
+                username
+            }
+            likes{
+                email
+                username
+                password
+                roles
+            }
+        }
+        likes{
+            email
+            username
+            password
+            roles
         }
     }
 }

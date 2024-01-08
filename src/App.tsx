@@ -16,6 +16,8 @@ import SearchResults from "./components/common/layout/searchbar/searchResults";
 import Follow from "./components/common/follow";
 import SendDM from "./components/common/dm/message"
 import ReadDM from "./components/common/dm/read";
+import DmDetails from "./components/common/dm/dmDetails";
+import DeleteUser from "./components/users/delete";
 
 function App() {
     const authContext = useAuth()
@@ -28,7 +30,6 @@ function App() {
                 <Route path="/login" element={<LoginContainer/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/unauthorized" element={<div>You have no access to this function</div>}/>
-                <Route path="/comments" element={<ProfileComponent/>}/>
                 <Route path="/posts" element={<PostContainer/>}/>
                 <Route path="/search/:username" element={<SearchResults />} />
 
@@ -36,6 +37,7 @@ function App() {
                     <Route path="/follow/:username" element={<Follow />} />
                     <Route path="/message/:username" element={<SendDM />} />
                     <Route path="/DM" element={<ReadDM />} />
+                    <Route path="/DM/details/:title" element={<DmDetails />} />
                     <Route path="/add_post" element={<AddPost/>}/>
                     <Route path="/my_posts" element={<MyPosts nrOfPosts={25} username={username}/>}/>
                     <Route path="/logout" element={<LoginContainer/>}/>
@@ -45,6 +47,7 @@ function App() {
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN"]}/>}>
                     <Route path="/users" element={<AllUsers/>}/>
+                    <Route path='/users/delete/:id' element={<DeleteUser />} />
                 </Route>
             </Route>
         </Routes>

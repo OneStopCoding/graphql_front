@@ -25,7 +25,8 @@ export type City = {
 export type Comment = {
   __typename?: 'Comment';
   author: User;
-  id?: Maybe<Scalars['ID']['output']>;
+  id: Scalars['ID']['output'];
+  likes: Array<User>;
   post: Scalars['ID']['output'];
   text: Scalars['String']['output'];
 };
@@ -42,7 +43,8 @@ export type Country = {
 
 export type Dm = {
   __typename?: 'DM';
-  images?: Maybe<Array<Scalars['String']['output']>>;
+  id: Scalars['ID']['output'];
+  images: Array<Scalars['String']['output']>;
   read: Scalars['Boolean']['output'];
   receiver: User;
   sender: User;
@@ -60,6 +62,7 @@ export type DmIn = {
 export type Image = {
   __typename?: 'Image';
   description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   uri: Scalars['String']['output'];
 };
@@ -88,11 +91,17 @@ export type Mutation = {
   addComment: Post;
   addPost: Post;
   createProfile: Profile;
+  deleteComment: Scalars['Boolean']['output'];
+  deleteDM: Scalars['Boolean']['output'];
+  deletePost: Scalars['Boolean']['output'];
+  deleteUser: Array<Maybe<User>>;
   follow?: Maybe<Profile>;
+  like: Post;
   login: Scalars['String']['output'];
-  readDM?: Maybe<Scalars['Boolean']['output']>;
   register: Scalars['String']['output'];
   sendDM?: Maybe<Profile>;
+  unFollow: Profile;
+  unLike: Post;
 };
 
 
@@ -111,19 +120,39 @@ export type MutationCreateProfileArgs = {
 };
 
 
+export type MutationDeleteCommentArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteDmArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeletePostArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationFollowArgs = {
   username: Scalars['String']['input'];
+};
+
+
+export type MutationLikeArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
 export type MutationLoginArgs = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
-};
-
-
-export type MutationReadDmArgs = {
-  read: Scalars['Boolean']['input'];
 };
 
 
@@ -136,13 +165,24 @@ export type MutationSendDmArgs = {
   dm: DmIn;
 };
 
+
+export type MutationUnFollowArgs = {
+  username: Scalars['String']['input'];
+};
+
+
+export type MutationUnLikeArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type Post = {
   __typename?: 'Post';
   author: User;
   body: Scalars['String']['output'];
   comments: Array<Comment>;
   id: Scalars['ID']['output'];
-  images?: Maybe<Array<Scalars['String']['output']>>;
+  images: Array<Scalars['String']['output']>;
+  likes: Array<User>;
   title: Scalars['String']['output'];
 };
 
@@ -157,7 +197,7 @@ export type Profile = {
   bio?: Maybe<Scalars['String']['output']>;
   firstname?: Maybe<Scalars['String']['output']>;
   followers?: Maybe<Array<Maybe<User>>>;
-  images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  images: Array<Scalars['String']['output']>;
   lastname?: Maybe<Scalars['String']['output']>;
   location?: Maybe<Location>;
   messages?: Maybe<Array<Maybe<Dm>>>;
@@ -185,12 +225,19 @@ export type Query = {
   __typename?: 'Query';
   allPosts: Array<Maybe<Post>>;
   allUsers: Array<Maybe<User>>;
+  getDM: Dm;
+  getDmForUser?: Maybe<Array<Dm>>;
   getProfile?: Maybe<Profile>;
   getProfileByUsername?: Maybe<Profile>;
   helloWorld: Scalars['String']['output'];
   postsForUser?: Maybe<Array<Maybe<Post>>>;
   recentPost?: Maybe<Array<Maybe<Post>>>;
   userByUsername?: Maybe<User>;
+};
+
+
+export type QueryGetDmArgs = {
+  title: Scalars['String']['input'];
 };
 
 
@@ -292,13 +339,6 @@ export type CreateProfileMutationVariables = Exact<{
 
 export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
-export type ReadDmMutationVariables = Exact<{
-  read: Scalars['Boolean']['input'];
-}>;
-
-
-export type ReadDmMutation = { __typename?: 'Mutation', readDM?: boolean | null };
-
 export type SendDmMutationVariables = Exact<{
   title?: InputMaybe<Scalars['String']['input']>;
   receiver: Scalars['String']['input'];
@@ -317,6 +357,55 @@ export type AddCommentMutationVariables = Exact<{
 
 export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'Post', title: string, author: { __typename?: 'User', username: string } } };
 
+export type DeleteCommentMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteCommentMutation = { __typename?: 'Mutation', deleteComment: boolean };
+
+export type DeletePostMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeletePostMutation = { __typename?: 'Mutation', deletePost: boolean };
+
+export type DeleteDmMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteDmMutation = { __typename?: 'Mutation', deleteDM: boolean };
+
+export type DeleteUserMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: Array<{ __typename?: 'User', email: string, username: string, roles?: string | null } | null> };
+
+export type UnFollowMutationVariables = Exact<{
+  username: Scalars['String']['input'];
+}>;
+
+
+export type UnFollowMutation = { __typename?: 'Mutation', unFollow: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
+
+export type LikeMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> } };
+
+export type UnLikeMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> } };
+
 export type HelloWorldQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -327,7 +416,7 @@ export type PostsByUserQueryVariables = Exact<{
 }>;
 
 
-export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } } | null> } | null> | null };
+export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> } | null> | null };
 
 export type UserByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
@@ -353,10 +442,22 @@ export type GetProfileByUsernameQueryVariables = Exact<{
 
 export type GetProfileByUsernameQuery = { __typename?: 'Query', getProfileByUsername?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null };
 
+export type GetDmQueryVariables = Exact<{
+  title: Scalars['String']['input'];
+}>;
+
+
+export type GetDmQuery = { __typename?: 'Query', getDM: { __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } };
+
+export type GetDmForUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDmForUserQuery = { __typename?: 'Query', getDmForUser?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } }> | null };
+
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } } | null> } | null> };
+export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> } | null> };
 
 
 export const LoginDocument = gql`
@@ -626,37 +727,6 @@ export function useCreateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProfileMutationHookResult = ReturnType<typeof useCreateProfileMutation>;
 export type CreateProfileMutationResult = Apollo.MutationResult<CreateProfileMutation>;
 export type CreateProfileMutationOptions = Apollo.BaseMutationOptions<CreateProfileMutation, CreateProfileMutationVariables>;
-export const ReadDmDocument = gql`
-    mutation readDM($read: Boolean!) {
-  readDM(read: $read)
-}
-    `;
-export type ReadDmMutationFn = Apollo.MutationFunction<ReadDmMutation, ReadDmMutationVariables>;
-
-/**
- * __useReadDmMutation__
- *
- * To run a mutation, you first call `useReadDmMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useReadDmMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [readDmMutation, { data, loading, error }] = useReadDmMutation({
- *   variables: {
- *      read: // value for 'read'
- *   },
- * });
- */
-export function useReadDmMutation(baseOptions?: Apollo.MutationHookOptions<ReadDmMutation, ReadDmMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ReadDmMutation, ReadDmMutationVariables>(ReadDmDocument, options);
-      }
-export type ReadDmMutationHookResult = ReturnType<typeof useReadDmMutation>;
-export type ReadDmMutationResult = Apollo.MutationResult<ReadDmMutation>;
-export type ReadDmMutationOptions = Apollo.BaseMutationOptions<ReadDmMutation, ReadDmMutationVariables>;
 export const SendDmDocument = gql`
     mutation sendDm($title: String, $receiver: String!, $text: String!, $images: [String]) {
   sendDM(dm: {receiver: $receiver, title: $title, text: $text, images: $images}) {
@@ -773,6 +843,322 @@ export function useAddCommentMutation(baseOptions?: Apollo.MutationHookOptions<A
 export type AddCommentMutationHookResult = ReturnType<typeof useAddCommentMutation>;
 export type AddCommentMutationResult = Apollo.MutationResult<AddCommentMutation>;
 export type AddCommentMutationOptions = Apollo.BaseMutationOptions<AddCommentMutation, AddCommentMutationVariables>;
+export const DeleteCommentDocument = gql`
+    mutation deleteComment($id: ID!) {
+  deleteComment(id: $id)
+}
+    `;
+export type DeleteCommentMutationFn = Apollo.MutationFunction<DeleteCommentMutation, DeleteCommentMutationVariables>;
+
+/**
+ * __useDeleteCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCommentMutation, { data, loading, error }] = useDeleteCommentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteCommentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCommentMutation, DeleteCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCommentMutation, DeleteCommentMutationVariables>(DeleteCommentDocument, options);
+      }
+export type DeleteCommentMutationHookResult = ReturnType<typeof useDeleteCommentMutation>;
+export type DeleteCommentMutationResult = Apollo.MutationResult<DeleteCommentMutation>;
+export type DeleteCommentMutationOptions = Apollo.BaseMutationOptions<DeleteCommentMutation, DeleteCommentMutationVariables>;
+export const DeletePostDocument = gql`
+    mutation deletePost($id: ID!) {
+  deletePost(id: $id)
+}
+    `;
+export type DeletePostMutationFn = Apollo.MutationFunction<DeletePostMutation, DeletePostMutationVariables>;
+
+/**
+ * __useDeletePostMutation__
+ *
+ * To run a mutation, you first call `useDeletePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeletePostMutation(baseOptions?: Apollo.MutationHookOptions<DeletePostMutation, DeletePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePostMutation, DeletePostMutationVariables>(DeletePostDocument, options);
+      }
+export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
+export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
+export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const DeleteDmDocument = gql`
+    mutation deleteDM($id: ID!) {
+  deleteDM(id: $id)
+}
+    `;
+export type DeleteDmMutationFn = Apollo.MutationFunction<DeleteDmMutation, DeleteDmMutationVariables>;
+
+/**
+ * __useDeleteDmMutation__
+ *
+ * To run a mutation, you first call `useDeleteDmMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteDmMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteDmMutation, { data, loading, error }] = useDeleteDmMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteDmMutation(baseOptions?: Apollo.MutationHookOptions<DeleteDmMutation, DeleteDmMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteDmMutation, DeleteDmMutationVariables>(DeleteDmDocument, options);
+      }
+export type DeleteDmMutationHookResult = ReturnType<typeof useDeleteDmMutation>;
+export type DeleteDmMutationResult = Apollo.MutationResult<DeleteDmMutation>;
+export type DeleteDmMutationOptions = Apollo.BaseMutationOptions<DeleteDmMutation, DeleteDmMutationVariables>;
+export const DeleteUserDocument = gql`
+    mutation deleteUser($id: ID!) {
+  deleteUser(id: $id) {
+    email
+    username
+    roles
+  }
+}
+    `;
+export type DeleteUserMutationFn = Apollo.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>;
+
+/**
+ * __useDeleteUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserMutation, { data, loading, error }] = useDeleteUserMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, options);
+      }
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
+export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
+export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
+export const UnFollowDocument = gql`
+    mutation unFollow($username: String!) {
+  unFollow(username: $username) {
+    firstname
+    lastname
+    profilePic
+    images
+    user {
+      email
+      username
+      password
+      roles
+    }
+    location {
+      city {
+        name
+      }
+      provence {
+        name
+      }
+      country {
+        name
+      }
+    }
+    socials {
+      website
+      github
+      twitter
+      instagram
+      fb
+    }
+    followers {
+      username
+    }
+    messages {
+      sender {
+        username
+      }
+      receiver {
+        username
+      }
+      title
+      text
+      images
+      read
+    }
+    bio
+  }
+}
+    `;
+export type UnFollowMutationFn = Apollo.MutationFunction<UnFollowMutation, UnFollowMutationVariables>;
+
+/**
+ * __useUnFollowMutation__
+ *
+ * To run a mutation, you first call `useUnFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnFollowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unFollowMutation, { data, loading, error }] = useUnFollowMutation({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useUnFollowMutation(baseOptions?: Apollo.MutationHookOptions<UnFollowMutation, UnFollowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnFollowMutation, UnFollowMutationVariables>(UnFollowDocument, options);
+      }
+export type UnFollowMutationHookResult = ReturnType<typeof useUnFollowMutation>;
+export type UnFollowMutationResult = Apollo.MutationResult<UnFollowMutation>;
+export type UnFollowMutationOptions = Apollo.BaseMutationOptions<UnFollowMutation, UnFollowMutationVariables>;
+export const LikeDocument = gql`
+    mutation like($id: ID!) {
+  like(id: $id) {
+    title
+    body
+    images
+    author {
+      username
+    }
+    comments {
+      text
+      author {
+        username
+      }
+      likes {
+        email
+        username
+        password
+        roles
+      }
+    }
+    likes {
+      email
+      username
+      password
+      roles
+    }
+  }
+}
+    `;
+export type LikeMutationFn = Apollo.MutationFunction<LikeMutation, LikeMutationVariables>;
+
+/**
+ * __useLikeMutation__
+ *
+ * To run a mutation, you first call `useLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likeMutation, { data, loading, error }] = useLikeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useLikeMutation(baseOptions?: Apollo.MutationHookOptions<LikeMutation, LikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LikeMutation, LikeMutationVariables>(LikeDocument, options);
+      }
+export type LikeMutationHookResult = ReturnType<typeof useLikeMutation>;
+export type LikeMutationResult = Apollo.MutationResult<LikeMutation>;
+export type LikeMutationOptions = Apollo.BaseMutationOptions<LikeMutation, LikeMutationVariables>;
+export const UnLikeDocument = gql`
+    mutation unLike($id: ID!) {
+  unLike(id: $id) {
+    title
+    body
+    images
+    author {
+      username
+    }
+    comments {
+      text
+      author {
+        username
+      }
+      likes {
+        email
+        username
+        password
+        roles
+      }
+    }
+    likes {
+      email
+      username
+      password
+      roles
+    }
+  }
+}
+    `;
+export type UnLikeMutationFn = Apollo.MutationFunction<UnLikeMutation, UnLikeMutationVariables>;
+
+/**
+ * __useUnLikeMutation__
+ *
+ * To run a mutation, you first call `useUnLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unLikeMutation, { data, loading, error }] = useUnLikeMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUnLikeMutation(baseOptions?: Apollo.MutationHookOptions<UnLikeMutation, UnLikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnLikeMutation, UnLikeMutationVariables>(UnLikeDocument, options);
+      }
+export type UnLikeMutationHookResult = ReturnType<typeof useUnLikeMutation>;
+export type UnLikeMutationResult = Apollo.MutationResult<UnLikeMutation>;
+export type UnLikeMutationOptions = Apollo.BaseMutationOptions<UnLikeMutation, UnLikeMutationVariables>;
 export const HelloWorldDocument = gql`
     query helloWorld {
   helloWorld
@@ -825,6 +1211,18 @@ export const PostsByUserDocument = gql`
       author {
         username
       }
+      likes {
+        email
+        username
+        password
+        roles
+      }
+    }
+    likes {
+      email
+      username
+      password
+      roles
     }
   }
 }
@@ -1110,6 +1508,103 @@ export type GetProfileByUsernameQueryHookResult = ReturnType<typeof useGetProfil
 export type GetProfileByUsernameLazyQueryHookResult = ReturnType<typeof useGetProfileByUsernameLazyQuery>;
 export type GetProfileByUsernameSuspenseQueryHookResult = ReturnType<typeof useGetProfileByUsernameSuspenseQuery>;
 export type GetProfileByUsernameQueryResult = Apollo.QueryResult<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>;
+export const GetDmDocument = gql`
+    query getDM($title: String!) {
+  getDM(title: $title) {
+    sender {
+      username
+    }
+    receiver {
+      username
+    }
+    title
+    text
+    images
+    read
+  }
+}
+    `;
+
+/**
+ * __useGetDmQuery__
+ *
+ * To run a query within a React component, call `useGetDmQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDmQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDmQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useGetDmQuery(baseOptions: Apollo.QueryHookOptions<GetDmQuery, GetDmQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDmQuery, GetDmQueryVariables>(GetDmDocument, options);
+      }
+export function useGetDmLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDmQuery, GetDmQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDmQuery, GetDmQueryVariables>(GetDmDocument, options);
+        }
+export function useGetDmSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDmQuery, GetDmQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDmQuery, GetDmQueryVariables>(GetDmDocument, options);
+        }
+export type GetDmQueryHookResult = ReturnType<typeof useGetDmQuery>;
+export type GetDmLazyQueryHookResult = ReturnType<typeof useGetDmLazyQuery>;
+export type GetDmSuspenseQueryHookResult = ReturnType<typeof useGetDmSuspenseQuery>;
+export type GetDmQueryResult = Apollo.QueryResult<GetDmQuery, GetDmQueryVariables>;
+export const GetDmForUserDocument = gql`
+    query getDmForUser {
+  getDmForUser {
+    sender {
+      username
+    }
+    receiver {
+      username
+    }
+    title
+    text
+    images
+    read
+  }
+}
+    `;
+
+/**
+ * __useGetDmForUserQuery__
+ *
+ * To run a query within a React component, call `useGetDmForUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDmForUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDmForUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDmForUserQuery(baseOptions?: Apollo.QueryHookOptions<GetDmForUserQuery, GetDmForUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDmForUserQuery, GetDmForUserQueryVariables>(GetDmForUserDocument, options);
+      }
+export function useGetDmForUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDmForUserQuery, GetDmForUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDmForUserQuery, GetDmForUserQueryVariables>(GetDmForUserDocument, options);
+        }
+export function useGetDmForUserSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetDmForUserQuery, GetDmForUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetDmForUserQuery, GetDmForUserQueryVariables>(GetDmForUserDocument, options);
+        }
+export type GetDmForUserQueryHookResult = ReturnType<typeof useGetDmForUserQuery>;
+export type GetDmForUserLazyQueryHookResult = ReturnType<typeof useGetDmForUserLazyQuery>;
+export type GetDmForUserSuspenseQueryHookResult = ReturnType<typeof useGetDmForUserSuspenseQuery>;
+export type GetDmForUserQueryResult = Apollo.QueryResult<GetDmForUserQuery, GetDmForUserQueryVariables>;
 export const AllPostsDocument = gql`
     query allPosts {
   allPosts {
@@ -1125,6 +1620,18 @@ export const AllPostsDocument = gql`
       author {
         username
       }
+      likes {
+        email
+        username
+        password
+        roles
+      }
+    }
+    likes {
+      email
+      username
+      password
+      roles
     }
   }
 }

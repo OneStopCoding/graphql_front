@@ -1,29 +1,24 @@
-import {Dm, Profile, useReadDmMutation} from "../../../generated/graphql";
+import {Profile} from "../../../generated/graphql";
 import React, {FC} from "react";
-import MessageComponent from "./component";
+import {Link} from "react-router-dom";
 
 interface Props {
     profile: Profile
 }
 
 const MessageContainer: FC<Props> = (profile) => {
-    const [mutation, {data, error, loading}] = useReadDmMutation({
-        fetchPolicy: "network-only",
-
-    })
     const profilePic = profile.profile.profilePic || ""
     const messages = profile.profile.messages || []
     const unRead = []
-    for (let i = 0; i < messages.length; i++) {
+    const read = []
+    for (let i = messages.length - 1; i > 0; i--) {
         if (messages[i]?.read === false) {
             unRead.push(messages[i])
+        } else {
+            read.push(messages[i])
         }
     }
-    mutation({
-        variables: {
-            read: true
-        }
-    }).then()
+
     return (
         <>
             <div className="container">
@@ -156,8 +151,54 @@ const MessageContainer: FC<Props> = (profile) => {
                             </div>
                         </div>
                         {
-                            messages.length > 0 && messages.map(
-                                message => <MessageComponent messages={message as Dm}/>
+                            unRead.length > 0 && unRead.map(
+                                message => (
+                                    <div className="row gutters-sm">
+                                        <div className="col-sm-6 mb-3">
+                                            <div className="card h-100">
+                                                <Link to={"/DM/details/" + message?.title}>
+                                                    <div className="card-body">
+                                                        <h3 className="d-flex align-items-center mb-3">{
+                                                            message?.read ? <span></span> :
+                                                                <span className="material-icons text-danger">New! </span>
+                                                        } From: <i
+                                                            className="material-icons text-info mr-2">{message?.sender.username}</i>
+                                                        </h3>
+                                                        <h3 className="d-flex align-items-center mb-3">Title: <i
+                                                            className="material-icons text-info mr-2">{message?.title}</i>
+                                                        </h3>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            )
+                        }
+
+                        {
+                            read.length > 0 && read.map(
+                                message => (
+                                    <div className="row gutters-sm">
+                                        <div className="col-sm-6 mb-3">
+                                            <div className="card h-100">
+                                                <Link to={"/DM/details/" + message?.title}>
+                                                    <div className="card-body">
+                                                        <h3 className="d-flex align-items-center mb-3">{
+                                                            message?.read ? <span></span> :
+                                                                <span className="material-icons text-danger">New! </span>
+                                                        } From: <i
+                                                            className="material-icons text-info mr-2">{message?.sender.username}</i>
+                                                        </h3>
+                                                        <h3 className="d-flex align-items-center mb-3">Title: <i
+                                                            className="material-icons text-info mr-2">{message?.title}</i>
+                                                        </h3>
+                                                    </div>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
                             )
                         }
                     </div>

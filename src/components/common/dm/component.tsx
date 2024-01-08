@@ -1,5 +1,6 @@
 import {Dm} from "../../../generated/graphql";
-import React, {FC} from "react";
+import React, {FC, useCallback} from "react";
+import {useNavigate} from "react-router-dom";
 
 interface Props {
     messages: Dm
@@ -10,6 +11,13 @@ const MessageComponent: FC<Props> = (messages) => {
     if (messages.messages?.images){
         messages.messages.images.map(image => imageUri.push(image))
     }
+    
+    const navigate = useNavigate()
+    const onButtonAuxClickCapture = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+        navigate("/Dm", {replace: true})
+        window.location.reload()
+    }, [navigate]);
+
     return (
         <div className="row gutters-sm">
             <div className="col-sm-6 mb-3">
@@ -25,6 +33,8 @@ const MessageComponent: FC<Props> = (messages) => {
                         <p>{messages.messages.text}</p>
                         <p>{imageUri.length > 0 && imageUri.map(image => <img src={image} alt="" />) }</p>
                     </div>
+                    <button className="button-85" role="button"
+                            onClickCapture={onButtonAuxClickCapture}>Return</button>
                 </div>
             </div>
         </div>

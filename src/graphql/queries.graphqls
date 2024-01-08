@@ -16,6 +16,18 @@ query postsByUser($author: String!){
             author{
                 username
             }
+            likes{
+                email
+                username
+                password
+                roles
+            }
+        }
+        likes{
+            email
+            username
+            password
+            roles
         }
     }
 }
@@ -124,6 +136,28 @@ query getProfileByUsername($username: String!){
     }
 }
 
+query getDM($title: String!){
+    getDM(title: $title){
+        sender{username}
+        receiver{username}
+        title
+        text
+        images
+        read
+    }
+}
+
+query getDmForUser{
+    getDmForUser{
+        sender{username}
+        receiver{username}
+        title
+        text
+        images
+        read
+    }
+}
+
 query allPosts{
     allPosts{
         id
@@ -138,6 +172,18 @@ query allPosts{
             author{
                 username
             }
+            likes{
+                email
+                username
+                password
+                roles
+            }
+        }
+        likes{
+            email
+            username
+            password
+            roles
         }
     }
 }

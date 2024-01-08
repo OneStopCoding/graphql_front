@@ -1,8 +1,8 @@
 import Header from "./Header";
 import * as React from 'react';
-import {ReactNode, useCallback, useMemo, useState} from 'react';
+import { useCallback, useMemo, useState} from 'react';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import {styled, useTheme} from '@mui/material/styles';
-import DescriptionIcon from "@mui/icons-material/Description"
 import CommentIcon from "@mui/icons-material/QuestionAnswer"
 import UserIcon from "@mui/icons-material/Person"
 import Box from "@mui/material/Box";
@@ -10,9 +10,10 @@ import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {Link, Outlet} from "react-router-dom";
-import AddPostIcon from "@mui/icons-material/PostAdd"
 import {Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import SearchBar from "./searchbar/searchbar";
+import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
+import MarkAsUnreadIcon from '@mui/icons-material/MarkAsUnread';
 
 const drawerWidth = 240
 
@@ -69,21 +70,22 @@ const Layout: React.FC<{}> = () => {
     const drawerOptions = useMemo(() => {
         return [
             {
-                text: "Posts",
-                icon: <DescriptionIcon/>,
-                url: "/posts"
+                text: "Messages",
+                icon: <MarkAsUnreadIcon />,
+                url: "/DM"
             }, {
-                text: "Users",
-                icon: <UserIcon/>,
-                url: "/users"
-            }, {
-                text: "Comments",
-                icon: <CommentIcon/>,
-                url: "/comments"
-            }, {
+                text: "New Post",
+                icon: <LibraryAddIcon/>,
+                url: "/add_post"
+            },  {
                 text: "My Posts",
-                icon: <DescriptionIcon/>,
+                icon:  <CommentIcon/>,
                 url: '/my_posts'
+            },
+            {
+                text: "Posts",
+                icon: <AutoStoriesIcon />,
+                url: "/posts"
             }
         ]
     }, []);
@@ -129,10 +131,10 @@ const Layout: React.FC<{}> = () => {
                 <Divider/>
                 <List>
                     <ListItem disablePadding>
-                        <StyledLink to={"/add_post"}>
+                        <StyledLink to={"/users"}>
                             <ListItemButton>
-                                <ListItemIcon>{<AddPostIcon/>}</ListItemIcon>
-                                <ListItemText>New Post</ListItemText>
+                                <ListItemIcon>{<UserIcon/>}</ListItemIcon>
+                                <ListItemText>Users</ListItemText>
                             </ListItemButton>
                         </StyledLink>
                     </ListItem>
