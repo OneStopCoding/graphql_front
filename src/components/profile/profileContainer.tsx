@@ -10,7 +10,6 @@ interface Props {
 }
 
 const ProfileDetails: FC<Props> = (profile, nrOfPosts) => {
-    console.log(window.location.href)
     if (window.location.href.includes('follow'))
       window.location.assign("/search/"+profile.profile.user.username)
     const loggedIn = useAuth()?.user?.username.toString() || ""

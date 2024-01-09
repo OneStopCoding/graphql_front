@@ -136,6 +136,49 @@ query getProfileByUsername($username: String!){
     }
 }
 
+query getAllProfiles{
+    allProfile{
+        firstname
+        lastname
+        profilePic
+        images
+        user{
+            email
+            username
+            password
+            roles
+        }
+        location{
+            city{
+                name
+            }
+            provence{
+                name
+            }
+            country{
+                name
+            }
+        }
+        socials{
+            website
+            github
+            twitter
+            instagram
+            fb
+        }
+        bio
+        followers{username}
+        messages{
+            sender{username}
+            receiver{username}
+            title
+            text
+            images
+            read
+        }
+    }
+}
+
 query getDM($title: String!){
     getDM(title: $title){
         sender{username}

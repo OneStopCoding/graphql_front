@@ -44,7 +44,7 @@ export type Country = {
 export type Dm = {
   __typename?: 'DM';
   id: Scalars['ID']['output'];
-  images: Array<Scalars['String']['output']>;
+  images?: Array<Scalars['String']['output']>;
   read: Scalars['Boolean']['output'];
   receiver: User;
   sender: User;
@@ -181,7 +181,7 @@ export type Post = {
   body: Scalars['String']['output'];
   comments: Array<Comment>;
   id: Scalars['ID']['output'];
-  images: Array<Scalars['String']['output']>;
+  images?: Array<Scalars['String']['output']>;
   likes: Array<User>;
   title: Scalars['String']['output'];
 };
@@ -196,11 +196,11 @@ export type Profile = {
   __typename?: 'Profile';
   bio?: Maybe<Scalars['String']['output']>;
   firstname?: Maybe<Scalars['String']['output']>;
-  followers?: Array<User>;
-  images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  followers?: Maybe<Array<Maybe<User>>>;
+  images?: Array<Scalars['String']['output']>;
   lastname?: Maybe<Scalars['String']['output']>;
   location?: Maybe<Location>;
-  messages?: Maybe<Array<Maybe<Dm>>>;
+  messages?: Array<Dm>;
   profilePic?: Maybe<Scalars['String']['output']>;
   socials?: Maybe<Socials>;
   user: User;
@@ -224,6 +224,7 @@ export type Provence = {
 export type Query = {
   __typename?: 'Query';
   allPosts: Array<Maybe<Post>>;
+  allProfile: Array<Maybe<Profile>>;
   allUsers: Array<Maybe<User>>;
   getDM: Dm;
   getDmForUser?: Maybe<Array<Dm>>;
@@ -441,6 +442,11 @@ export type GetProfileByUsernameQueryVariables = Exact<{
 
 
 export type GetProfileByUsernameQuery = { __typename?: 'Query', getProfileByUsername?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null };
+
+export type GetAllProfilesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllProfilesQuery = { __typename?: 'Query', allProfile: Array<{ __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null> };
 
 export type GetDmQueryVariables = Exact<{
   title: Scalars['String']['input'];
@@ -1523,6 +1529,88 @@ export type GetProfileByUsernameQueryHookResult = ReturnType<typeof useGetProfil
 export type GetProfileByUsernameLazyQueryHookResult = ReturnType<typeof useGetProfileByUsernameLazyQuery>;
 export type GetProfileByUsernameSuspenseQueryHookResult = ReturnType<typeof useGetProfileByUsernameSuspenseQuery>;
 export type GetProfileByUsernameQueryResult = Apollo.QueryResult<GetProfileByUsernameQuery, GetProfileByUsernameQueryVariables>;
+export const GetAllProfilesDocument = gql`
+    query getAllProfiles {
+  allProfile {
+    firstname
+    lastname
+    profilePic
+    images
+    user {
+      email
+      username
+      password
+      roles
+    }
+    location {
+      city {
+        name
+      }
+      provence {
+        name
+      }
+      country {
+        name
+      }
+    }
+    socials {
+      website
+      github
+      twitter
+      instagram
+      fb
+    }
+    bio
+    followers {
+      username
+    }
+    messages {
+      sender {
+        username
+      }
+      receiver {
+        username
+      }
+      title
+      text
+      images
+      read
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAllProfilesQuery__
+ *
+ * To run a query within a React component, call `useGetAllProfilesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllProfilesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllProfilesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllProfilesQuery(baseOptions?: Apollo.QueryHookOptions<GetAllProfilesQuery, GetAllProfilesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllProfilesQuery, GetAllProfilesQueryVariables>(GetAllProfilesDocument, options);
+      }
+export function useGetAllProfilesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProfilesQuery, GetAllProfilesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllProfilesQuery, GetAllProfilesQueryVariables>(GetAllProfilesDocument, options);
+        }
+export function useGetAllProfilesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAllProfilesQuery, GetAllProfilesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllProfilesQuery, GetAllProfilesQueryVariables>(GetAllProfilesDocument, options);
+        }
+export type GetAllProfilesQueryHookResult = ReturnType<typeof useGetAllProfilesQuery>;
+export type GetAllProfilesLazyQueryHookResult = ReturnType<typeof useGetAllProfilesLazyQuery>;
+export type GetAllProfilesSuspenseQueryHookResult = ReturnType<typeof useGetAllProfilesSuspenseQuery>;
+export type GetAllProfilesQueryResult = Apollo.QueryResult<GetAllProfilesQuery, GetAllProfilesQueryVariables>;
 export const GetDmDocument = gql`
     query getDM($title: String!) {
   getDM(title: $title) {

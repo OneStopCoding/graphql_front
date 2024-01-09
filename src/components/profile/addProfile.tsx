@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import ImageValidation from "../../utility/imageValidation";
-import {useCreateProfileMutation} from "../../generated/graphql";
+import {Profile, useCreateProfileMutation} from "../../generated/graphql";
 import {useNavigate} from "react-router-dom";
 import React, {useEffect} from "react";
 import {FormikProvider, useFormik} from "formik";
@@ -10,6 +10,8 @@ import Typography from "@mui/material/Typography";
 import StyledForm from "../common/layout/form";
 import {Alert, Button, TextField} from "@mui/material";
 import Loader from "../common/Loader";
+import IsExistingProfile from "./profileExist";
+import ProfileDetails from "./profileContainer";
 
 const validationSchema = yup.object().shape({
     firstname: yup.string().required("Please enter a firstname"),
@@ -59,7 +61,7 @@ const CreateProfile = () => {
         validationSchema,
         onSubmit: async (values) => {
             const images = values.images.length > 0 ? await ImageUrls(values.images) : []
-console.log("profilePic", values.profilePic[0])
+            console.log("profilePic", values.profilePic[0])
             const profilePic = values.profilePic.length > 0 ? await ImageUrls(Array(values.profilePic[0])) : []
 
             await createProfile({
@@ -72,7 +74,7 @@ console.log("profilePic", values.profilePic[0])
                     socials: [
                         values.website === "" ? "null" : values.website,
                         values.github === "" ? "null" : values.github,
-                        values.twitter === "" ? "null" :  values.twitter,
+                        values.twitter === "" ? "null" : values.twitter,
                         values.instagram === "" ? "null" : values.instagram,
                         values.fb === "" ? "null" : values.fb
                     ],
@@ -81,6 +83,15 @@ console.log("profilePic", values.profilePic[0])
             })
         }
     })
+    const existingProfile = IsExistingProfile()
+    if (existingProfile !== null) {
+        return (
+            <Box sx={{textAlign: 'center', marginTop: '2em'}}>
+                <Typography variant='h6'>Profile already exists</Typography>
+                <ProfileDetails profile={existingProfile as Profile} nrOfPosts={3}/>
+            </Box>
+        )
+    }
     return (
         <FormikProvider value={profile}>
             <Box sx={{textAlign: 'center', marginTop: '2em'}}>
