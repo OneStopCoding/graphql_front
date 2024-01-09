@@ -72,6 +72,12 @@ mutation addPost($title: String!, $body: String!, $images: [String]){
         author{
             username
         }
+        comments{
+            text
+            author{
+                username
+            }
+        }
     }
 }
 
@@ -191,6 +197,15 @@ mutation addComment($text: String!, $postId: ID!){
         title
         author{
             username
+        }
+        comments{
+            text
+            author{
+                username
+            }
+            likes{
+                username
+            }
         }
     }
 }

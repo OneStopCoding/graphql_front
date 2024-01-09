@@ -4,31 +4,45 @@ import {Profile} from "../../generated/graphql";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../common/AuthProvider";
 
-interface Props{
+interface Props {
     profile: Profile
     nrOfPosts: number
 }
 
-const ProfileDetails:  FC<Props> = (profile, nrOfPosts) => {
-
+const ProfileDetails: FC<Props> = (profile, nrOfPosts) => {
+    console.log(window.location.href)
+    if (window.location.href.includes('follow'))
+      window.location.assign("/search/"+profile.profile.user.username)
     const loggedIn = useAuth()?.user?.username.toString() || ""
     const profilePic = profile.profile.profilePic || ""
     const navigate = useNavigate()
     const messages = profile.profile.messages || []
     const unRead = []
-    for (let i = 0; i < messages.length; i++){
-        if (messages[i]?.read === false){
+    const followers = profile.profile.followers || []
+    let follow = 'follow'
+    for (let i = 0; i < followers.length; i++) {
+        if (loggedIn === followers[i]?.username)
+            follow = 'unfollow'
+    }
+
+    for (let i = 0; i < messages.length; i++) {
+        if (messages[i]?.read === false) {
             unRead.push(messages[i])
         }
     }
 
     const onButtonClickCapture = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-        navigate("/follow/"+profile.profile.user.username)
-        window.location.reload()
-    }, [navigate, profile.profile.user.username]);
+        let successUrl = ""
+        if (follow === "follow")
+            successUrl = "/follow/" + profile.profile.user.username
+        else
+            successUrl ="/unfollow/"+profile.profile.user.username
+
+        window.location.assign(successUrl)
+    }, [follow, profile.profile.user.username]);
     const sendMessage = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-        loggedIn !== profile.profile.user.username? navigate("/message/"+profile.profile.user.username) : navigate("/DM")
-        window.location.reload()
+        loggedIn !== profile.profile.user.username ? navigate("/message/" + profile.profile.user.username) : navigate("/DM")
+
     }, [loggedIn, navigate, profile.profile.user.username]);
 
     return (
@@ -51,8 +65,10 @@ const ProfileDetails:  FC<Props> = (profile, nrOfPosts) => {
                                         <div> &nbsp; &nbsp; Followers: {profile.profile.followers?.length || 0}</div>
                                         <div> &nbsp; &nbsp; Messages: {unRead.length || 0}</div>
                                         <button className="btn btn-primary"
-                                                onClickCapture={onButtonClickCapture}>Follow</button>
-                                        <button className="btn btn-outline-primary" onClickCapture={sendMessage}>Message</button>
+                                                onClickCapture={onButtonClickCapture}>{follow}</button>
+                                        <button className="btn btn-outline-primary"
+                                                onClickCapture={sendMessage}>Message
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -13,11 +13,12 @@ import ProfileComponent from "./components/profile/profile";
 import CreateProfile from "./components/profile/addProfile";
 import {useAuth} from "./components/common/AuthProvider";
 import SearchResults from "./components/common/layout/searchbar/searchResults";
-import Follow from "./components/common/follow";
+import Follow from "./utility/follow";
 import SendDM from "./components/common/dm/message"
 import ReadDM from "./components/common/dm/read";
 import DmDetails from "./components/common/dm/dmDetails";
 import DeleteUser from "./components/users/delete";
+import UnFollow from "./utility/unfollow";
 
 function App() {
     const authContext = useAuth()
@@ -35,6 +36,7 @@ function App() {
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN", "ROLE_USER"]}/>}>
                     <Route path="/follow/:username" element={<Follow />} />
+                    <Route path="/unfollow/:username" element={<UnFollow />} />
                     <Route path="/message/:username" element={<SendDM />} />
                     <Route path="/DM" element={<ReadDM />} />
                     <Route path="/DM/details/:title" element={<DmDetails />} />

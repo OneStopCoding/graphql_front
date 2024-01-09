@@ -59,8 +59,8 @@ const CreateProfile = () => {
         validationSchema,
         onSubmit: async (values) => {
             const images = values.images.length > 0 ? await ImageUrls(values.images) : []
-
-            const profilePic = values.profilePic.length > 0 ? await ImageUrls([values.profilePic]) : []
+console.log("profilePic", values.profilePic[0])
+            const profilePic = values.profilePic.length > 0 ? await ImageUrls(Array(values.profilePic[0])) : []
 
             await createProfile({
                 variables: {

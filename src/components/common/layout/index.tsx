@@ -14,6 +14,7 @@ import {Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemT
 import SearchBar from "./searchbar/searchbar";
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import MarkAsUnreadIcon from '@mui/icons-material/MarkAsUnread';
+import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 
 const drawerWidth = 240
 
@@ -135,6 +136,14 @@ const Layout: React.FC<{}> = () => {
                             <ListItemButton>
                                 <ListItemIcon>{<UserIcon/>}</ListItemIcon>
                                 <ListItemText>Users</ListItemText>
+                            </ListItemButton>
+                        </StyledLink>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <StyledLink to={"/create_profile"}>
+                            <ListItemButton>
+                                <ListItemIcon>{<PersonAddAlt1RoundedIcon />}</ListItemIcon>
+                                <ListItemText>Create Profile</ListItemText>
                             </ListItemButton>
                         </StyledLink>
                     </ListItem>

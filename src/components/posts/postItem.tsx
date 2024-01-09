@@ -19,6 +19,9 @@ const [addComment, {data, loading, error}] = useAddCommentMutation(({
     if (post.images && post.images.length > 0){
         post.images.map(image => imageUri.push(image))
     }
+const body = document.getElementById('body')
+    if(body !== null)
+        body.innerHTML = post.body
 
     useEffect(() => {
         if (data){
@@ -34,8 +37,8 @@ const [addComment, {data, loading, error}] = useAddCommentMutation(({
                     <Typography gutterBottom variant="subtitle1" component={"div"}>
                         {post.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                        {post.body}
+                    <Typography  variant="body2" color="text.secondary">
+                        <div id="body"></div>
                     </Typography>
                 </CardContent>
             </CardActionArea>

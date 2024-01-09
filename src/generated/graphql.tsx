@@ -94,12 +94,12 @@ export type Mutation = {
   deleteComment: Scalars['Boolean']['output'];
   deleteDM: Scalars['Boolean']['output'];
   deletePost: Scalars['Boolean']['output'];
-  deleteUser: Array<Maybe<User>>;
-  follow?: Maybe<Profile>;
+  deleteUser: Array<User>;
+  follow: Profile;
   like: Post;
   login: Scalars['String']['output'];
   register: Scalars['String']['output'];
-  sendDM?: Maybe<Profile>;
+  sendDM: Profile;
   unFollow: Profile;
   unLike: Post;
 };
@@ -196,8 +196,8 @@ export type Profile = {
   __typename?: 'Profile';
   bio?: Maybe<Scalars['String']['output']>;
   firstname?: Maybe<Scalars['String']['output']>;
-  followers?: Maybe<Array<Maybe<User>>>;
-  images: Array<Scalars['String']['output']>;
+  followers?: Array<User>;
+  images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   lastname?: Maybe<Scalars['String']['output']>;
   location?: Maybe<Location>;
   messages?: Maybe<Array<Maybe<Dm>>>;
@@ -324,7 +324,7 @@ export type AddPostMutationVariables = Exact<{
 }>;
 
 
-export type AddPostMutation = { __typename?: 'Mutation', addPost: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string } } };
+export type AddPostMutation = { __typename?: 'Mutation', addPost: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }> } };
 
 export type CreateProfileMutationVariables = Exact<{
   firstname: Scalars['String']['input'];
@@ -355,7 +355,7 @@ export type AddCommentMutationVariables = Exact<{
 }>;
 
 
-export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'Post', title: string, author: { __typename?: 'User', username: string } } };
+export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'Post', title: string, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', username: string }> }> } };
 
 export type DeleteCommentMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -612,6 +612,12 @@ export const AddPostDocument = gql`
     author {
       username
     }
+    comments {
+      text
+      author {
+        username
+      }
+    }
   }
 }
     `;
@@ -812,6 +818,15 @@ export const AddCommentDocument = gql`
     title
     author {
       username
+    }
+    comments {
+      text
+      author {
+        username
+      }
+      likes {
+        username
+      }
     }
   }
 }
