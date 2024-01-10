@@ -303,11 +303,15 @@ mutation like($id: ID!){
             password
             roles
         }
+        dislikes{
+            email
+            username
+        }
     }
 }
 
-mutation unLike($id: ID!){
-    unLike(id: $id){
+mutation dislike($id: ID!){
+    dislike(id: $id){
         title
         body
         images
@@ -331,6 +335,10 @@ mutation unLike($id: ID!){
             username
             password
             roles
+        }
+        dislikes{
+            email
+            username
         }
     }
 }

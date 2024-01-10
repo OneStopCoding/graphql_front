@@ -4,6 +4,9 @@ import Typography from "@mui/material/Typography";
 import {Post, useAddCommentMutation} from "../../generated/graphql";
 import CommentList from "./comments/CommentList";
 import AddComment from "./comments/addComment";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import {useNavigate} from "react-router-dom";
 
 interface  Props{
     post: Post
@@ -11,18 +14,30 @@ interface  Props{
 
 
 const PostItem: FC<Props> = ({post}) =>{
+    const navigate = useNavigate()
+    useEffect(() => {
+        if(window.location.href.includes('like')){
+            navigate('/posts',{replace: true})
+            window.location.reload()
+        }
+    }, [navigate]);
     const [showComments, setShowComments] = useState(false)
 const [addComment, {data, loading, error}] = useAddCommentMutation(({
     fetchPolicy: "network-only"
 }));
     const imageUri: string[] = []
-    if (post.images && post.images.length > 0){
+    if (post.images  && post.images.length > 0){
         post.images.map(image => imageUri.push(image))
     }
 const body = document.getElementById('body')
     if(body !== null)
         body.innerHTML = post.body
-
+const likeF = () =>{
+    navigate("/posts/like/"+post.id)
+}
+    const dislike = ()=>{
+        navigate("/posts/dislike/"+post.id)
+    }
     useEffect(() => {
         if (data){
             window.location.reload()
@@ -35,7 +50,7 @@ const body = document.getElementById('body')
             <CardActionArea>
                 <CardContent>
                     <Typography gutterBottom variant="subtitle1" component={"div"}>
-                        {post.title}
+                        {post.title}<span className='like'>{post.likes.length}&nbsp;<ThumbUpIcon onClick={likeF}/> &nbsp; &nbsp;{post.dislikes?.length || 0}&nbsp;<ThumbDownAltIcon onClick={dislike} /></span>
                     </Typography>
                     <Typography  variant="body2" color="text.secondary">
                         <div id="body"></div>

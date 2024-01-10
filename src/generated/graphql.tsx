@@ -95,13 +95,13 @@ export type Mutation = {
   deleteDM: Scalars['Boolean']['output'];
   deletePost: Scalars['Boolean']['output'];
   deleteUser: Array<User>;
-  follow: Profile;
+  dislike: Post;
+  follow?: Maybe<Profile>;
   like: Post;
   login: Scalars['String']['output'];
   register: Scalars['String']['output'];
   sendDM: Profile;
   unFollow: Profile;
-  unLike: Post;
 };
 
 
@@ -140,6 +140,11 @@ export type MutationDeleteUserArgs = {
 };
 
 
+export type MutationDislikeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationFollowArgs = {
   username: Scalars['String']['input'];
 };
@@ -170,19 +175,15 @@ export type MutationUnFollowArgs = {
   username: Scalars['String']['input'];
 };
 
-
-export type MutationUnLikeArgs = {
-  id: Scalars['ID']['input'];
-};
-
 export type Post = {
   __typename?: 'Post';
   author: User;
   body: Scalars['String']['output'];
   comments: Array<Comment>;
+  dislikes?: Array<Maybe<User>>;
   id: Scalars['ID']['output'];
   images?: Array<Scalars['String']['output']>;
-  likes: Array<User>;
+  likes: Array<Maybe<User>>;
   title: Scalars['String']['output'];
 };
 
@@ -197,10 +198,10 @@ export type Profile = {
   bio?: Maybe<Scalars['String']['output']>;
   firstname?: Maybe<Scalars['String']['output']>;
   followers?: Maybe<Array<Maybe<User>>>;
-  images?: Array<Scalars['String']['output']>;
+  images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   lastname?: Maybe<Scalars['String']['output']>;
   location?: Maybe<Location>;
-  messages?: Array<Dm>;
+  messages?: Maybe<Array<Maybe<Dm>>>;
   profilePic?: Maybe<Scalars['String']['output']>;
   socials?: Maybe<Socials>;
   user: User;
@@ -398,14 +399,14 @@ export type LikeMutationVariables = Exact<{
 }>;
 
 
-export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> } };
+export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string } | null> | null } };
 
-export type UnLikeMutationVariables = Exact<{
+export type DislikeMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type UnLikeMutation = { __typename?: 'Mutation', unLike: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> } };
+export type DislikeMutation = { __typename?: 'Mutation', dislike: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string } | null> | null } };
 
 export type HelloWorldQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -417,7 +418,7 @@ export type PostsByUserQueryVariables = Exact<{
 }>;
 
 
-export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> } | null> | null };
+export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string } | null> | null } | null> | null };
 
 export type UserByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
@@ -463,7 +464,7 @@ export type GetDmForUserQuery = { __typename?: 'Query', getDmForUser?: Array<{ _
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> } | null> };
+export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string } | null> | null } | null> };
 
 
 export const LoginDocument = gql`
@@ -1095,6 +1096,10 @@ export const LikeDocument = gql`
       password
       roles
     }
+    dislikes {
+      email
+      username
+    }
   }
 }
     `;
@@ -1124,9 +1129,9 @@ export function useLikeMutation(baseOptions?: Apollo.MutationHookOptions<LikeMut
 export type LikeMutationHookResult = ReturnType<typeof useLikeMutation>;
 export type LikeMutationResult = Apollo.MutationResult<LikeMutation>;
 export type LikeMutationOptions = Apollo.BaseMutationOptions<LikeMutation, LikeMutationVariables>;
-export const UnLikeDocument = gql`
-    mutation unLike($id: ID!) {
-  unLike(id: $id) {
+export const DislikeDocument = gql`
+    mutation dislike($id: ID!) {
+  dislike(id: $id) {
     title
     body
     images
@@ -1151,35 +1156,39 @@ export const UnLikeDocument = gql`
       password
       roles
     }
+    dislikes {
+      email
+      username
+    }
   }
 }
     `;
-export type UnLikeMutationFn = Apollo.MutationFunction<UnLikeMutation, UnLikeMutationVariables>;
+export type DislikeMutationFn = Apollo.MutationFunction<DislikeMutation, DislikeMutationVariables>;
 
 /**
- * __useUnLikeMutation__
+ * __useDislikeMutation__
  *
- * To run a mutation, you first call `useUnLikeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUnLikeMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDislikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDislikeMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [unLikeMutation, { data, loading, error }] = useUnLikeMutation({
+ * const [dislikeMutation, { data, loading, error }] = useDislikeMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useUnLikeMutation(baseOptions?: Apollo.MutationHookOptions<UnLikeMutation, UnLikeMutationVariables>) {
+export function useDislikeMutation(baseOptions?: Apollo.MutationHookOptions<DislikeMutation, DislikeMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UnLikeMutation, UnLikeMutationVariables>(UnLikeDocument, options);
+        return Apollo.useMutation<DislikeMutation, DislikeMutationVariables>(DislikeDocument, options);
       }
-export type UnLikeMutationHookResult = ReturnType<typeof useUnLikeMutation>;
-export type UnLikeMutationResult = Apollo.MutationResult<UnLikeMutation>;
-export type UnLikeMutationOptions = Apollo.BaseMutationOptions<UnLikeMutation, UnLikeMutationVariables>;
+export type DislikeMutationHookResult = ReturnType<typeof useDislikeMutation>;
+export type DislikeMutationResult = Apollo.MutationResult<DislikeMutation>;
+export type DislikeMutationOptions = Apollo.BaseMutationOptions<DislikeMutation, DislikeMutationVariables>;
 export const HelloWorldDocument = gql`
     query helloWorld {
   helloWorld
@@ -1244,6 +1253,10 @@ export const PostsByUserDocument = gql`
       username
       password
       roles
+    }
+    dislikes {
+      email
+      username
     }
   }
 }
@@ -1735,6 +1748,10 @@ export const AllPostsDocument = gql`
       username
       password
       roles
+    }
+    dislikes {
+      email
+      username
     }
   }
 }

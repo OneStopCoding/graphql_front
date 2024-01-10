@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
-import {Profile, useFollowMutation} from "../generated/graphql";
-import Loader from "../components/common/Loader";
-import ProfileDetails from "../components/profile/profileContainer";
+import {Profile, useFollowMutation} from "../../../generated/graphql";
+import Loader from "../../common/Loader";
+import ProfileDetails from "../profileContainer";
 
 
 

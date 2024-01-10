@@ -29,6 +29,10 @@ query postsByUser($author: String!){
             password
             roles
         }
+        dislikes{
+            email
+            username
+        }
     }
 }
 
@@ -227,6 +231,10 @@ query allPosts{
             username
             password
             roles
+        }
+        dislikes{
+            email
+            username
         }
     }
 }
