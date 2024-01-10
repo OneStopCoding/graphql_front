@@ -203,9 +203,6 @@ mutation addComment($text: String!, $postId: ID!){
             author{
                 username
             }
-            likes{
-                username
-            }
         }
     }
 }
@@ -290,12 +287,6 @@ mutation like($id: ID!){
             author{
                 username
             }
-            likes{
-                email
-                username
-                password
-                roles
-            }
         }
         likes{
             email
@@ -322,12 +313,6 @@ mutation dislike($id: ID!){
             text
             author{
                 username
-            }
-            likes{
-                email
-                username
-                password
-                roles
             }
         }
         likes{

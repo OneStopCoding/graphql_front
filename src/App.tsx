@@ -19,12 +19,10 @@ import ReadDM from "./components/common/dm/read";
 import DmDetails from "./components/common/dm/dmDetails";
 import DeleteUser from "./components/users/delete";
 import UnFollow from "./components/profile/follow/unfollow";
-import Like from "./components/posts/like/like";
-import Dislike from "./components/posts/like/dislike";
 
 function App() {
     const authContext = useAuth()
-    const username = authContext?.user?.username? authContext.user.username.toString() : ""
+    const username = authContext?.user?.username ? authContext.user.username.toString() : ""
     return (
         <Routes>
             <Route path={"/"} element={<Layout/>}>
@@ -34,26 +32,24 @@ function App() {
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/unauthorized" element={<div>You have no access to this function</div>}/>
                 <Route path="/posts" element={<PostContainer/>}/>
-                <Route path="/search/:username" element={<SearchResults />} />
+                <Route path="/search/:username" element={<SearchResults/>}/>
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN", "ROLE_USER"]}/>}>
-                    <Route path="/follow/:username" element={<Follow />} />
-                    <Route path="/unfollow/:username" element={<UnFollow />} />
-                    <Route path="/posts/like/:id" element={<Like />} />
-                    <Route path="/posts/dislike/:id" element={<Dislike />} />
-                    <Route path="/message/:username" element={<SendDM />} />
-                    <Route path="/DM" element={<ReadDM />} />
-                    <Route path="/DM/details/:title" element={<DmDetails />} />
+                    <Route path="/follow/:username" element={<Follow/>}/>
+                    <Route path="/unfollow/:username" element={<UnFollow/>}/>
+                    <Route path="/message/:username" element={<SendDM/>}/>
+                    <Route path="/DM" element={<ReadDM/>}/>
+                    <Route path="/DM/details/:title" element={<DmDetails/>}/>
                     <Route path="/add_post" element={<AddPost/>}/>
                     <Route path="/my_posts" element={<MyPosts nrOfPosts={25} username={username}/>}/>
                     <Route path="/logout" element={<LoginContainer/>}/>
                     <Route path="/create_profile" element={<CreateProfile/>}/>
-                    <Route path="/profile" element={<ProfileComponent />}/>
+                    <Route path="/profile" element={<ProfileComponent/>}/>
                 </Route>
 
                 <Route element={<RequireAuth roles={["ROLE_ADMIN"]}/>}>
                     <Route path="/users" element={<AllUsers/>}/>
-                    <Route path='/users/delete/:id' element={<DeleteUser />} />
+                    <Route path='/users/delete/:id' element={<DeleteUser/>}/>
                 </Route>
             </Route>
         </Routes>

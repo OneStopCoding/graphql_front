@@ -26,7 +26,6 @@ export type Comment = {
   __typename?: 'Comment';
   author: User;
   id: Scalars['ID']['output'];
-  likes: Array<User>;
   post: Scalars['ID']['output'];
   text: Scalars['String']['output'];
 };
@@ -94,9 +93,9 @@ export type Mutation = {
   deleteComment: Scalars['Boolean']['output'];
   deleteDM: Scalars['Boolean']['output'];
   deletePost: Scalars['Boolean']['output'];
-  deleteUser: Array<User>;
+  deleteUser: Array<Maybe<User>>;
   dislike: Post;
-  follow?: Maybe<Profile>;
+  follow: Profile;
   like: Post;
   login: Scalars['String']['output'];
   register: Scalars['String']['output'];
@@ -180,9 +179,9 @@ export type Post = {
   author: User;
   body: Scalars['String']['output'];
   comments: Array<Comment>;
-  dislikes?: Array<Maybe<User>>;
+  dislikes: Array<Maybe<User>>;
   id: Scalars['ID']['output'];
-  images?: Array<Scalars['String']['output']>;
+  images: Array<Scalars['String']['output']>;
   likes: Array<Maybe<User>>;
   title: Scalars['String']['output'];
 };
@@ -224,16 +223,16 @@ export type Provence = {
 
 export type Query = {
   __typename?: 'Query';
-  allPosts: Array<Maybe<Post>>;
-  allProfile: Array<Maybe<Profile>>;
-  allUsers: Array<Maybe<User>>;
+  allPosts: Array<Post>;
+  allProfile: Array<Profile>;
+  allUsers: Array<User>;
   getDM: Dm;
   getDmForUser?: Maybe<Array<Dm>>;
-  getProfile?: Maybe<Profile>;
+  getProfile: Profile;
   getProfileByUsername?: Maybe<Profile>;
   helloWorld: Scalars['String']['output'];
   postsForUser?: Maybe<Array<Maybe<Post>>>;
-  recentPost?: Maybe<Array<Maybe<Post>>>;
+  recentPost: Array<Post>;
   userByUsername?: Maybe<User>;
 };
 
@@ -284,7 +283,7 @@ export type User = {
   __typename?: 'User';
   email: Scalars['ID']['output'];
   password: Scalars['String']['output'];
-  roles?: Maybe<Scalars['String']['output']>;
+  roles: Scalars['String']['output'];
   username: Scalars['String']['output'];
 };
 
@@ -317,7 +316,7 @@ export type FollowMutationVariables = Exact<{
 }>;
 
 
-export type FollowMutation = { __typename?: 'Mutation', follow?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null };
+export type FollowMutation = { __typename?: 'Mutation', follow: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
 export type AddPostMutationVariables = Exact<{
   title: Scalars['String']['input'];
@@ -349,7 +348,7 @@ export type SendDmMutationVariables = Exact<{
 }>;
 
 
-export type SendDmMutation = { __typename?: 'Mutation', sendDM?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null };
+export type SendDmMutation = { __typename?: 'Mutation', sendDM: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
 export type AddCommentMutationVariables = Exact<{
   text: Scalars['String']['input'];
@@ -357,7 +356,7 @@ export type AddCommentMutationVariables = Exact<{
 }>;
 
 
-export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'Post', title: string, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', username: string }> }> } };
+export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'Post', title: string, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }> } };
 
 export type DeleteCommentMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -399,14 +398,14 @@ export type LikeMutationVariables = Exact<{
 }>;
 
 
-export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string } | null> | null } };
+export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes: Array<{ __typename?: 'User', email: string, username: string } | null> } };
 
 export type DislikeMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type DislikeMutation = { __typename?: 'Mutation', dislike: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string } | null> | null } };
+export type DislikeMutation = { __typename?: 'Mutation', dislike: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes: Array<{ __typename?: 'User', email: string, username: string } | null> } };
 
 export type HelloWorldQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -418,7 +417,7 @@ export type PostsByUserQueryVariables = Exact<{
 }>;
 
 
-export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string } | null> | null } | null> | null };
+export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes: Array<{ __typename?: 'User', email: string, username: string } | null> } | null> | null };
 
 export type UserByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
@@ -430,12 +429,12 @@ export type UserByUsernameQuery = { __typename?: 'Query', userByUsername?: { __t
 export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUsersQuery = { __typename?: 'Query', allUsers: Array<{ __typename?: 'User', email: string, username: string, roles?: string | null } | null> };
+export type AllUsersQuery = { __typename?: 'Query', allUsers: Array<{ __typename?: 'User', email: string, username: string, roles?: string | null }> };
 
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null };
+export type GetProfileQuery = { __typename?: 'Query', getProfile: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
 export type GetProfileByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
@@ -447,7 +446,7 @@ export type GetProfileByUsernameQuery = { __typename?: 'Query', getProfileByUser
 export type GetAllProfilesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllProfilesQuery = { __typename?: 'Query', allProfile: Array<{ __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null> };
+export type GetAllProfilesQuery = { __typename?: 'Query', allProfile: Array<{ __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null }> };
 
 export type GetDmQueryVariables = Exact<{
   title: Scalars['String']['input'];
@@ -464,7 +463,7 @@ export type GetDmForUserQuery = { __typename?: 'Query', getDmForUser?: Array<{ _
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string }, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null }> }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string } | null> | null } | null> };
+export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes: Array<{ __typename?: 'User', email: string, username: string } | null> }> };
 
 
 export const LoginDocument = gql`
@@ -831,9 +830,6 @@ export const AddCommentDocument = gql`
       author {
         username
       }
-      likes {
-        username
-      }
     }
   }
 }
@@ -1083,12 +1079,6 @@ export const LikeDocument = gql`
       author {
         username
       }
-      likes {
-        email
-        username
-        password
-        roles
-      }
     }
     likes {
       email
@@ -1142,12 +1132,6 @@ export const DislikeDocument = gql`
       text
       author {
         username
-      }
-      likes {
-        email
-        username
-        password
-        roles
       }
     }
     likes {
@@ -1240,12 +1224,6 @@ export const PostsByUserDocument = gql`
       text
       author {
         username
-      }
-      likes {
-        email
-        username
-        password
-        roles
       }
     }
     likes {
@@ -1735,12 +1713,6 @@ export const AllPostsDocument = gql`
       text
       author {
         username
-      }
-      likes {
-        email
-        username
-        password
-        roles
       }
     }
     likes {

@@ -16,12 +16,6 @@ query postsByUser($author: String!){
             author{
                 username
             }
-            likes{
-                email
-                username
-                password
-                roles
-            }
         }
         likes{
             email
@@ -218,12 +212,6 @@ query allPosts{
             text
             author{
                 username
-            }
-            likes{
-                email
-                username
-                password
-                roles
             }
         }
         likes{
