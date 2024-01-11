@@ -6,8 +6,11 @@ import CommentList from "./comments/CommentList";
 import AddComment from "./comments/addComment";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
-import { useNavigate} from "react-router-dom";
-
+import {Link, useNavigate} from "react-router-dom";
+import EditIcon from '@mui/icons-material/Edit';
+import EditPost, {DeletePost} from "./editPost";
+import {useAuth} from "../common/AuthProvider";
+import UnsubscribeIcon from '@mui/icons-material/Unsubscribe';
 
 interface Props {
     post: Post
@@ -16,23 +19,25 @@ interface Props {
 
 const PostItem: FC<Props> = ({post}) => {
     const navigate = useNavigate()
-    if(window.location.href.includes('like') || window.location.href.includes('comment')){
+    if (window.location.href.includes('like') || window.location.href.includes('comment')) {
         navigate("/posts", {replace: true})
     }
+    const isMyPost = post.author.username === useAuth()?.user?.username
+
     const [showComments, setShowComments] = useState(false)
     const [addComment, {data, loading, error}] = useAddCommentMutation(({
         fetchPolicy: "network-only"
     }));
 
 
-       const [like,] = useLikeMutation({
-            fetchPolicy: "network-only",
+    const [like,] = useLikeMutation({
+        fetchPolicy: "network-only",
 
-        })
+    })
 
-        useEffect(() => {
-            data && window.location.reload()
-        }, [data]);
+    useEffect(() => {
+        data && window.location.reload()
+    }, [data]);
 
 
     const [dislike] = useDislikeMutation({
@@ -49,28 +54,34 @@ const PostItem: FC<Props> = ({post}) => {
         post.images.map(image => imageUri.push(image))
     }
 
-const dislikes = post.dislikes || []
-   return (
+
+
+    const dislikes = post.dislikes || []
+    return (
         <Card sx={{
-            width: 500, mb: 5
+            width: 500, mb: 5, margin: "auto"
         }}>
-            <CardActionArea >
+            <CardActionArea>
                 <CardContent>
-                    <Typography gutterBottom variant="subtitle1" component={"div"}>
-                        {post.title}<span className='like'>{post.likes.length}&nbsp;<ThumbUpIcon onClick={()=> {
-                           like({
-                               variables: {
-                                   id: post.id
-                               }
-                           }).then(()=>window.location.reload())
-                    }}/> &nbsp; &nbsp;{dislikes.length}&nbsp;<ThumbDownAltIcon
-                    onClick={()=> {
-                        dislike({
-                            variables: {
-                                id: post.id
-                            }
-                        }).then(() => window.location.reload())
-                    }}/></span>
+                    <Typography gutterBottom variant="subtitle1" component={"div"}>{isMyPost && <span>
+                        <EditIcon onClick={EditPost} /> Edit&nbsp; &nbsp; <Link to={"/posts/delete/" + post.id}><UnsubscribeIcon  /> Delete</Link>
+
+                    </span>
+                    }
+                       &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {post.title}<span className='like'>{post.likes.length}&nbsp;<ThumbUpIcon onClick={() => {
+                            like({
+                                variables: {
+                                    id: post.id
+                                }
+                            }).then(() => window.location.reload())
+                        }}/> &nbsp; &nbsp;{dislikes.length}&nbsp;<ThumbDownAltIcon
+                            onClick={() => {
+                                dislike({
+                                    variables: {
+                                        id: post.id
+                                    }
+                                }).then(() => window.location.reload())
+                            }}/></span>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         <div className="content" dangerouslySetInnerHTML={{__html: post.body}}></div>
@@ -111,3 +122,4 @@ const dislikes = post.dislikes || []
 }
 
 export default PostItem
+

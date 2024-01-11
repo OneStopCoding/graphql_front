@@ -12,6 +12,7 @@ query postsByUser($author: String!){
             username
         }
         comments{
+            id
             text
             author{
                 username
@@ -256,6 +257,7 @@ query allPosts{
             username
         }
         comments{
+            id
             text
             author{
                 username
@@ -266,6 +268,35 @@ query allPosts{
             username
             password
             roles
+        }
+        dislikes{
+            email
+            username
+        }
+    }
+}
+
+query postByTitle($title: String!){
+    postByTitle(title: $title){
+        id
+        title
+        body
+        images
+        author{
+            email
+            username
+        }
+        comments{
+            id
+            text
+            author{
+                email
+                username
+            }
+        }
+        likes{
+            email
+            username
         }
         dislikes{
             email

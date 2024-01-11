@@ -1,39 +1,99 @@
-import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {Post, useAddPostMutation, useDeletePostMutation, usePostsByUserQuery} from "../../generated/graphql";
+import {useAuth} from "../common/AuthProvider";
+import React,{useEffect, useState} from "react";
 import {FormikProvider, useFormik} from "formik";
+import ImageUrls from "../../utility/file/imageUrls";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import {Alert, Button, TextField} from "@mui/material";
-import Loader from "../common/Loader";
-import * as yup from "yup";
-import {useAddPostMutation} from "../../generated/graphql";
-import ImageUrls from "../../utility/file/imageUrls";
-import ImageValidation from "../../utility/file/imageValidation";
 import StyledForm from "../common/layout/form";
+import {Alert, Button, TextField} from "@mui/material";
 import ReactQuill from "react-quill";
-import 'react-quill/dist/quill.snow.css';
+import Loader from "../common/Loader";
+import {validationSchema} from "./addPost";
+import * as yup from "yup";
+import {useParams} from "react-router-dom";
 
 
-export const validationSchema = yup.object().shape({
-    title: yup.string().required("Please enter a title"),
-    images: ImageValidation
-})
+export const MyPost = ()=> {
+    const username = useAuth()?.user?.username.toString() || ""
+    const {data, error, loading} = usePostsByUserQuery({
+        variables: {
+            author: username
+        }
+    })
+    return data?.postsForUser as Post[]
+}
+const PostSelect = (my_posts: string | number | readonly string[] | undefined, handleChange: React.ChangeEventHandler<HTMLSelectElement> | undefined, handleBlur: React.FocusEventHandler<HTMLSelectElement> | undefined) =>{
+    const posts: Post[] = MyPost()
+    const validationSchema = yup.object().shape({
+        title: yup.string(),
+    })
+   // const {data, loading, error} = usePo
+    const titleForm = useFormik({
+        initialValues: {
+            title: "",
+        },
+        validationSchema,
+        onSubmit: async (values) => {
 
-const AddPost = () => {
+
+        }
+    })
+            const [title, setTitle] = useState("")
+    const select = [ <option value="" label="Which post do you wish to edit?">
+        Select a provence{" "}
+    </option>]
+   posts.map(post => select.push(<option value={post.title} label={post.title}>
+       {" "}
+       {post.title}
+   </option>))
+    return (
+        <div>
+            <label htmlFor="my_posts" style={{display: "block"}}>
+                Country
+            </label>
+            <select
+                name="title"
+                value={title}
+                onChange={title => {
+
+                }}
+                onBlur={handleBlur}
+                style={{display: "block"}}
+            >
+                {select}
+            </select>
+
+        </div>
+    )
+}
+export const DeletePost= ()=>{
+    const id = useParams().id || ""
+    const [deleted, {data}] = useDeletePostMutation({
+        fetchPolicy: "network-only",
+        variables: {
+            id: id
+        }
+    })
+    deleted().then(() => window.location.assign("/posts"))
+    return (
+        <></>
+    )
+}
+
+const EditPost = () => {
     const [convertedText, setConvertedText] = useState("");
 
 
     const [addPost, {data, loading, error}] = useAddPostMutation({
         fetchPolicy: "network-only"
     })
-    const navigate = useNavigate()
-    const successUrl = '/posts'
 
     useEffect(() => {
         if (data) {
-            navigate(successUrl, {replace: true})
+          window.location.assign("/posts")
         }
-    }, [data, navigate])
+    }, [data])
 
 
     const postForm = useFormik({
@@ -102,6 +162,7 @@ const AddPost = () => {
             </Box>
         </FormikProvider>
     )
-}
 
-export default AddPost;
+
+}
+export default EditPost

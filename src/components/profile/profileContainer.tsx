@@ -3,6 +3,7 @@ import React, {FC, useCallback} from "react";
 import {Profile} from "../../generated/graphql";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../common/AuthProvider";
+import Box from "@mui/material/Box";
 
 interface Props {
     profile: Profile

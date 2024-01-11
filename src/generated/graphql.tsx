@@ -179,10 +179,10 @@ export type Post = {
   author: User;
   body: Scalars['String']['output'];
   comments: Array<Comment>;
-  dislikes?: Maybe<Array<User>>;
+  dislikes?: Array<User>;
   id: Scalars['ID']['output'];
   images?: Array<Scalars['String']['output']>;
-  likes: Array<User>;
+  likes: Array<Maybe<User>>;
   title: Scalars['String']['output'];
 };
 
@@ -240,6 +240,7 @@ export type Query = {
   locationsPerCity: Array<Location>;
   locationsPerCountry: Array<Location>;
   locationsPerProvence: Array<Location>;
+  postByTitle: Post;
   postsForUser?: Maybe<Array<Maybe<Post>>>;
   profileById?: Maybe<Profile>;
   provincesPerCountry: Array<Provence>;
@@ -275,6 +276,11 @@ export type QueryLocationsPerCountryArgs = {
 
 export type QueryLocationsPerProvenceArgs = {
   provence: Scalars['String']['input'];
+};
+
+
+export type QueryPostByTitleArgs = {
+  title: Scalars['String']['input'];
 };
 
 
@@ -366,7 +372,7 @@ export type AddPostMutationVariables = Exact<{
 }>;
 
 
-export type AddPostMutation = { __typename?: 'Mutation', addPost: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }> } };
+export type AddPostMutation = { __typename?: 'Mutation', addPost: { __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, author: { __typename?: 'User', username: string } }> } };
 
 export type CreateProfileMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -398,7 +404,7 @@ export type AddCommentMutationVariables = Exact<{
 }>;
 
 
-export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'Post', title: string, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }> } };
+export type AddCommentMutation = { __typename?: 'Mutation', addComment: { __typename?: 'Post', id: string, title: string, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, author: { __typename?: 'User', username: string } }> } };
 
 export type DeleteCommentMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -459,7 +465,7 @@ export type PostsByUserQueryVariables = Exact<{
 }>;
 
 
-export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null } | null> | null };
+export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null } | null> | null };
 
 export type UserByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
@@ -512,7 +518,14 @@ export type GetDmForUserQuery = { __typename?: 'Query', getDmForUser?: Array<{ _
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null }> };
+export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null }> };
+
+export type PostByTitleQueryVariables = Exact<{
+  title: Scalars['String']['input'];
+}>;
+
+
+export type PostByTitleQuery = { __typename?: 'Query', postByTitle: { __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', email: string, username: string }, comments: Array<{ __typename?: 'Comment', id: string, text: string, author: { __typename?: 'User', email: string, username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null } };
 
 export type AllLocationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -712,6 +725,7 @@ export type FollowMutationOptions = Apollo.BaseMutationOptions<FollowMutation, F
 export const AddPostDocument = gql`
     mutation addPost($title: String!, $body: String!, $images: [String]) {
   addPost(postIn: {title: $title, body: $body, images: $images}) {
+    id
     title
     body
     images
@@ -719,6 +733,7 @@ export const AddPostDocument = gql`
       username
     }
     comments {
+      id
       text
       author {
         username
@@ -923,11 +938,13 @@ export type SendDmMutationOptions = Apollo.BaseMutationOptions<SendDmMutation, S
 export const AddCommentDocument = gql`
     mutation addComment($text: String!, $postId: ID!) {
   addComment(commentIn: {text: $text, post: $postId}) {
+    id
     title
     author {
       username
     }
     comments {
+      id
       text
       author {
         username
@@ -1324,6 +1341,7 @@ export const PostsByUserDocument = gql`
       username
     }
     comments {
+      id
       text
       author {
         username
@@ -1900,6 +1918,7 @@ export const AllPostsDocument = gql`
       username
     }
     comments {
+      id
       text
       author {
         username
@@ -1950,6 +1969,69 @@ export type AllPostsQueryHookResult = ReturnType<typeof useAllPostsQuery>;
 export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery>;
 export type AllPostsSuspenseQueryHookResult = ReturnType<typeof useAllPostsSuspenseQuery>;
 export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
+export const PostByTitleDocument = gql`
+    query postByTitle($title: String!) {
+  postByTitle(title: $title) {
+    id
+    title
+    body
+    images
+    author {
+      email
+      username
+    }
+    comments {
+      id
+      text
+      author {
+        email
+        username
+      }
+    }
+    likes {
+      email
+      username
+    }
+    dislikes {
+      email
+      username
+    }
+  }
+}
+    `;
+
+/**
+ * __usePostByTitleQuery__
+ *
+ * To run a query within a React component, call `usePostByTitleQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostByTitleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostByTitleQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function usePostByTitleQuery(baseOptions: Apollo.QueryHookOptions<PostByTitleQuery, PostByTitleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PostByTitleQuery, PostByTitleQueryVariables>(PostByTitleDocument, options);
+      }
+export function usePostByTitleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostByTitleQuery, PostByTitleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PostByTitleQuery, PostByTitleQueryVariables>(PostByTitleDocument, options);
+        }
+export function usePostByTitleSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<PostByTitleQuery, PostByTitleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<PostByTitleQuery, PostByTitleQueryVariables>(PostByTitleDocument, options);
+        }
+export type PostByTitleQueryHookResult = ReturnType<typeof usePostByTitleQuery>;
+export type PostByTitleLazyQueryHookResult = ReturnType<typeof usePostByTitleLazyQuery>;
+export type PostByTitleSuspenseQueryHookResult = ReturnType<typeof usePostByTitleSuspenseQuery>;
+export type PostByTitleQueryResult = Apollo.QueryResult<PostByTitleQuery, PostByTitleQueryVariables>;
 export const AllLocationsDocument = gql`
     query allLocations {
   allLocations {

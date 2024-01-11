@@ -47,7 +47,7 @@ const CreateProfile = () => {
             navigate(successUrl, {replace: true})
         }
     }, [data, navigate])
-    const id = existingProfile?.id || uuidv4()
+    const id = existingProfile?.id || ""
     const firstname = existingProfile?.firstname || ""
     const lastname = existingProfile?.lastname || ""
     const bio = existingProfile?.bio || ""
@@ -83,10 +83,10 @@ const CreateProfile = () => {
         onSubmit: async (values) => {
             const images = values.images.length > 0 ? await ImageUrls(values.images) : []
             const profilePic = values.profilePic.length > 0 ? await ImageUrls(Array(values.profilePic[0])) : []
-console.log("id: ", id)
+
             await createProfile({
                 variables: {
-                    id: id,
+                    id: id === "" ? uuidv4() : id,
                     firstname: values.firstname === "" ? firstname : values.firstname,
                     lastname: values.lastname === "" ? lastname: values.lastname,
                     profilePic: profilePic[0] === null || profilePic[0] === "" ? oldProfilePic : profilePic[0],
@@ -104,7 +104,6 @@ console.log("id: ", id)
                     bio: values.bio === "" ? bio: values.bio,
                 }
             })
-            console.log(data)
         }
     })
 const countries = CountrySelect(profile.values.country, profile.handleChange, profile.handleBlur)
@@ -306,7 +305,7 @@ const countries = CountrySelect(profile.values.country, profile.handleChange, pr
                                    helperText={profile.touched.fb && profile.errors.fb}
                                    sx={{marginTop: "10px"}}/>
 
-                        <Button variant="contained" type="submit" sx={{marginTop: "10px"}}>Create Profile</Button>
+                        <Button variant="contained" type="submit" sx={{marginTop: "10px"}}>{id === "" ? 'Create Profile' : 'Update Profile'}</Button>
 
                         {error && <Alert severity="error">{error.message}, Please try again!</Alert>}
                     </StyledForm>

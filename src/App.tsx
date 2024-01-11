@@ -19,6 +19,7 @@ import ReadDM from "./components/common/dm/read";
 import DmDetails from "./components/common/dm/dmDetails";
 import DeleteUser from "./components/users/delete";
 import UnFollow from "./components/profile/follow/unfollow";
+import {DeletePost} from "./components/posts/editPost";
 
 function App() {
     const authContext = useAuth()
@@ -41,6 +42,7 @@ function App() {
                     <Route path="/DM" element={<ReadDM/>}/>
                     <Route path="/DM/details/:title" element={<DmDetails/>}/>
                     <Route path="/add_post" element={<AddPost/>}/>
+                    <Route path="/posts/delete/:id" element={<DeletePost />}/>
                     <Route path="/my_posts" element={<MyPosts nrOfPosts={25} username={username}/>}/>
                     <Route path="/logout" element={<LoginContainer/>}/>
                     <Route path="/create_profile" element={<CreateProfile/>}/>
