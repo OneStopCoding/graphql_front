@@ -179,9 +179,9 @@ export type Post = {
   author: User;
   body: Scalars['String']['output'];
   comments: Array<Comment>;
-  dislikes: Array<Maybe<User>>;
+  dislikes?: Maybe<Array<User>>;
   id: Scalars['ID']['output'];
-  images: Array<Scalars['String']['output']>;
+  images?: Array<Scalars['String']['output']>;
   likes: Array<Maybe<User>>;
   title: Scalars['String']['output'];
 };
@@ -223,17 +223,30 @@ export type Provence = {
 
 export type Query = {
   __typename?: 'Query';
+  allCities: Array<City>;
+  allLocations: Array<Location>;
   allPosts: Array<Post>;
   allProfile: Array<Profile>;
+  allProvinces: Array<Provence>;
   allUsers: Array<User>;
+  citiesPerProvince: Array<City>;
   getDM: Dm;
   getDmForUser?: Maybe<Array<Dm>>;
   getProfile: Profile;
   getProfileByUsername?: Maybe<Profile>;
   helloWorld: Scalars['String']['output'];
+  locationsPerCity: Array<Location>;
+  locationsPerCountry: Array<Location>;
+  locationsPerProvence: Array<Location>;
   postsForUser?: Maybe<Array<Maybe<Post>>>;
+  provincesPerCountry: Array<Provence>;
   recentPost: Array<Post>;
   userByUsername?: Maybe<User>;
+};
+
+
+export type QueryCitiesPerProvinceArgs = {
+  province?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -247,8 +260,28 @@ export type QueryGetProfileByUsernameArgs = {
 };
 
 
+export type QueryLocationsPerCityArgs = {
+  city: Scalars['String']['input'];
+};
+
+
+export type QueryLocationsPerCountryArgs = {
+  country?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryLocationsPerProvenceArgs = {
+  provence: Scalars['String']['input'];
+};
+
+
 export type QueryPostsForUserArgs = {
   author: Scalars['String']['input'];
+};
+
+
+export type QueryProvincesPerCountryArgs = {
+  country: Scalars['String']['input'];
 };
 
 
@@ -283,7 +316,7 @@ export type User = {
   __typename?: 'User';
   email: Scalars['ID']['output'];
   password: Scalars['String']['output'];
-  roles: Scalars['String']['output'];
+  roles?: Maybe<Scalars['String']['output']>;
   username: Scalars['String']['output'];
 };
 
@@ -398,14 +431,14 @@ export type LikeMutationVariables = Exact<{
 }>;
 
 
-export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes: Array<{ __typename?: 'User', email: string, username: string } | null> } };
+export type LikeMutation = { __typename?: 'Mutation', like: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null } };
 
 export type DislikeMutationVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
 
-export type DislikeMutation = { __typename?: 'Mutation', dislike: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes: Array<{ __typename?: 'User', email: string, username: string } | null> } };
+export type DislikeMutation = { __typename?: 'Mutation', dislike: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null } };
 
 export type HelloWorldQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -417,7 +450,7 @@ export type PostsByUserQueryVariables = Exact<{
 }>;
 
 
-export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes: Array<{ __typename?: 'User', email: string, username: string } | null> } | null> | null };
+export type PostsByUserQuery = { __typename?: 'Query', postsForUser?: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null } | null> | null };
 
 export type UserByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
@@ -463,7 +496,57 @@ export type GetDmForUserQuery = { __typename?: 'Query', getDmForUser?: Array<{ _
 export type AllPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes: Array<{ __typename?: 'User', email: string, username: string } | null> }> };
+export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename?: 'Post', id: string, title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }>, likes: Array<{ __typename?: 'User', email: string, username: string, password: string, roles?: string | null } | null>, dislikes?: Array<{ __typename?: 'User', email: string, username: string }> | null }> };
+
+export type AllLocationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllLocationsQuery = { __typename?: 'Query', allLocations: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } }> };
+
+export type LocationsPerCityQueryVariables = Exact<{
+  city: Scalars['String']['input'];
+}>;
+
+
+export type LocationsPerCityQuery = { __typename?: 'Query', locationsPerCity: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } }> };
+
+export type LocationsPerProvenceQueryVariables = Exact<{
+  provence: Scalars['String']['input'];
+}>;
+
+
+export type LocationsPerProvenceQuery = { __typename?: 'Query', locationsPerProvence: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } }> };
+
+export type LocationsPerCountryQueryVariables = Exact<{
+  country: Scalars['String']['input'];
+}>;
+
+
+export type LocationsPerCountryQuery = { __typename?: 'Query', locationsPerCountry: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } }> };
+
+export type ProvincesPerCountryQueryVariables = Exact<{
+  country: Scalars['String']['input'];
+}>;
+
+
+export type ProvincesPerCountryQuery = { __typename?: 'Query', provincesPerCountry: Array<{ __typename?: 'Provence', name: string }> };
+
+export type CitiesPerProvinceQueryVariables = Exact<{
+  province: Scalars['String']['input'];
+}>;
+
+
+export type CitiesPerProvinceQuery = { __typename?: 'Query', citiesPerProvince: Array<{ __typename?: 'City', name: string }> };
+
+export type AllProvincesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllProvincesQuery = { __typename?: 'Query', allProvinces: Array<{ __typename?: 'Provence', name: string }> };
+
+export type AllCitiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllCitiesQuery = { __typename?: 'Query', allCities: Array<{ __typename?: 'City', name: string }> };
 
 
 export const LoginDocument = gql`
@@ -1760,3 +1843,352 @@ export type AllPostsQueryHookResult = ReturnType<typeof useAllPostsQuery>;
 export type AllPostsLazyQueryHookResult = ReturnType<typeof useAllPostsLazyQuery>;
 export type AllPostsSuspenseQueryHookResult = ReturnType<typeof useAllPostsSuspenseQuery>;
 export type AllPostsQueryResult = Apollo.QueryResult<AllPostsQuery, AllPostsQueryVariables>;
+export const AllLocationsDocument = gql`
+    query allLocations {
+  allLocations {
+    city {
+      name
+    }
+    provence {
+      name
+    }
+    country {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllLocationsQuery__
+ *
+ * To run a query within a React component, call `useAllLocationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllLocationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllLocationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllLocationsQuery(baseOptions?: Apollo.QueryHookOptions<AllLocationsQuery, AllLocationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllLocationsQuery, AllLocationsQueryVariables>(AllLocationsDocument, options);
+      }
+export function useAllLocationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllLocationsQuery, AllLocationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllLocationsQuery, AllLocationsQueryVariables>(AllLocationsDocument, options);
+        }
+export function useAllLocationsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AllLocationsQuery, AllLocationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AllLocationsQuery, AllLocationsQueryVariables>(AllLocationsDocument, options);
+        }
+export type AllLocationsQueryHookResult = ReturnType<typeof useAllLocationsQuery>;
+export type AllLocationsLazyQueryHookResult = ReturnType<typeof useAllLocationsLazyQuery>;
+export type AllLocationsSuspenseQueryHookResult = ReturnType<typeof useAllLocationsSuspenseQuery>;
+export type AllLocationsQueryResult = Apollo.QueryResult<AllLocationsQuery, AllLocationsQueryVariables>;
+export const LocationsPerCityDocument = gql`
+    query locationsPerCity($city: String!) {
+  locationsPerCity(city: $city) {
+    city {
+      name
+    }
+    provence {
+      name
+    }
+    country {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useLocationsPerCityQuery__
+ *
+ * To run a query within a React component, call `useLocationsPerCityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLocationsPerCityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLocationsPerCityQuery({
+ *   variables: {
+ *      city: // value for 'city'
+ *   },
+ * });
+ */
+export function useLocationsPerCityQuery(baseOptions: Apollo.QueryHookOptions<LocationsPerCityQuery, LocationsPerCityQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LocationsPerCityQuery, LocationsPerCityQueryVariables>(LocationsPerCityDocument, options);
+      }
+export function useLocationsPerCityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LocationsPerCityQuery, LocationsPerCityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LocationsPerCityQuery, LocationsPerCityQueryVariables>(LocationsPerCityDocument, options);
+        }
+export function useLocationsPerCitySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<LocationsPerCityQuery, LocationsPerCityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LocationsPerCityQuery, LocationsPerCityQueryVariables>(LocationsPerCityDocument, options);
+        }
+export type LocationsPerCityQueryHookResult = ReturnType<typeof useLocationsPerCityQuery>;
+export type LocationsPerCityLazyQueryHookResult = ReturnType<typeof useLocationsPerCityLazyQuery>;
+export type LocationsPerCitySuspenseQueryHookResult = ReturnType<typeof useLocationsPerCitySuspenseQuery>;
+export type LocationsPerCityQueryResult = Apollo.QueryResult<LocationsPerCityQuery, LocationsPerCityQueryVariables>;
+export const LocationsPerProvenceDocument = gql`
+    query locationsPerProvence($provence: String!) {
+  locationsPerProvence(provence: $provence) {
+    city {
+      name
+    }
+    provence {
+      name
+    }
+    country {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useLocationsPerProvenceQuery__
+ *
+ * To run a query within a React component, call `useLocationsPerProvenceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLocationsPerProvenceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLocationsPerProvenceQuery({
+ *   variables: {
+ *      provence: // value for 'provence'
+ *   },
+ * });
+ */
+export function useLocationsPerProvenceQuery(baseOptions: Apollo.QueryHookOptions<LocationsPerProvenceQuery, LocationsPerProvenceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LocationsPerProvenceQuery, LocationsPerProvenceQueryVariables>(LocationsPerProvenceDocument, options);
+      }
+export function useLocationsPerProvenceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LocationsPerProvenceQuery, LocationsPerProvenceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LocationsPerProvenceQuery, LocationsPerProvenceQueryVariables>(LocationsPerProvenceDocument, options);
+        }
+export function useLocationsPerProvenceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<LocationsPerProvenceQuery, LocationsPerProvenceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LocationsPerProvenceQuery, LocationsPerProvenceQueryVariables>(LocationsPerProvenceDocument, options);
+        }
+export type LocationsPerProvenceQueryHookResult = ReturnType<typeof useLocationsPerProvenceQuery>;
+export type LocationsPerProvenceLazyQueryHookResult = ReturnType<typeof useLocationsPerProvenceLazyQuery>;
+export type LocationsPerProvenceSuspenseQueryHookResult = ReturnType<typeof useLocationsPerProvenceSuspenseQuery>;
+export type LocationsPerProvenceQueryResult = Apollo.QueryResult<LocationsPerProvenceQuery, LocationsPerProvenceQueryVariables>;
+export const LocationsPerCountryDocument = gql`
+    query locationsPerCountry($country: String!) {
+  locationsPerCountry(country: $country) {
+    city {
+      name
+    }
+    provence {
+      name
+    }
+    country {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useLocationsPerCountryQuery__
+ *
+ * To run a query within a React component, call `useLocationsPerCountryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLocationsPerCountryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLocationsPerCountryQuery({
+ *   variables: {
+ *      country: // value for 'country'
+ *   },
+ * });
+ */
+export function useLocationsPerCountryQuery(baseOptions: Apollo.QueryHookOptions<LocationsPerCountryQuery, LocationsPerCountryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<LocationsPerCountryQuery, LocationsPerCountryQueryVariables>(LocationsPerCountryDocument, options);
+      }
+export function useLocationsPerCountryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LocationsPerCountryQuery, LocationsPerCountryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<LocationsPerCountryQuery, LocationsPerCountryQueryVariables>(LocationsPerCountryDocument, options);
+        }
+export function useLocationsPerCountrySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<LocationsPerCountryQuery, LocationsPerCountryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<LocationsPerCountryQuery, LocationsPerCountryQueryVariables>(LocationsPerCountryDocument, options);
+        }
+export type LocationsPerCountryQueryHookResult = ReturnType<typeof useLocationsPerCountryQuery>;
+export type LocationsPerCountryLazyQueryHookResult = ReturnType<typeof useLocationsPerCountryLazyQuery>;
+export type LocationsPerCountrySuspenseQueryHookResult = ReturnType<typeof useLocationsPerCountrySuspenseQuery>;
+export type LocationsPerCountryQueryResult = Apollo.QueryResult<LocationsPerCountryQuery, LocationsPerCountryQueryVariables>;
+export const ProvincesPerCountryDocument = gql`
+    query provincesPerCountry($country: String!) {
+  provincesPerCountry(country: $country) {
+    name
+  }
+}
+    `;
+
+/**
+ * __useProvincesPerCountryQuery__
+ *
+ * To run a query within a React component, call `useProvincesPerCountryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProvincesPerCountryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProvincesPerCountryQuery({
+ *   variables: {
+ *      country: // value for 'country'
+ *   },
+ * });
+ */
+export function useProvincesPerCountryQuery(baseOptions: Apollo.QueryHookOptions<ProvincesPerCountryQuery, ProvincesPerCountryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProvincesPerCountryQuery, ProvincesPerCountryQueryVariables>(ProvincesPerCountryDocument, options);
+      }
+export function useProvincesPerCountryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProvincesPerCountryQuery, ProvincesPerCountryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProvincesPerCountryQuery, ProvincesPerCountryQueryVariables>(ProvincesPerCountryDocument, options);
+        }
+export function useProvincesPerCountrySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ProvincesPerCountryQuery, ProvincesPerCountryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProvincesPerCountryQuery, ProvincesPerCountryQueryVariables>(ProvincesPerCountryDocument, options);
+        }
+export type ProvincesPerCountryQueryHookResult = ReturnType<typeof useProvincesPerCountryQuery>;
+export type ProvincesPerCountryLazyQueryHookResult = ReturnType<typeof useProvincesPerCountryLazyQuery>;
+export type ProvincesPerCountrySuspenseQueryHookResult = ReturnType<typeof useProvincesPerCountrySuspenseQuery>;
+export type ProvincesPerCountryQueryResult = Apollo.QueryResult<ProvincesPerCountryQuery, ProvincesPerCountryQueryVariables>;
+export const CitiesPerProvinceDocument = gql`
+    query citiesPerProvince($province: String!) {
+  citiesPerProvince(province: $province) {
+    name
+  }
+}
+    `;
+
+/**
+ * __useCitiesPerProvinceQuery__
+ *
+ * To run a query within a React component, call `useCitiesPerProvinceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCitiesPerProvinceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCitiesPerProvinceQuery({
+ *   variables: {
+ *      province: // value for 'province'
+ *   },
+ * });
+ */
+export function useCitiesPerProvinceQuery(baseOptions: Apollo.QueryHookOptions<CitiesPerProvinceQuery, CitiesPerProvinceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CitiesPerProvinceQuery, CitiesPerProvinceQueryVariables>(CitiesPerProvinceDocument, options);
+      }
+export function useCitiesPerProvinceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CitiesPerProvinceQuery, CitiesPerProvinceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CitiesPerProvinceQuery, CitiesPerProvinceQueryVariables>(CitiesPerProvinceDocument, options);
+        }
+export function useCitiesPerProvinceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CitiesPerProvinceQuery, CitiesPerProvinceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CitiesPerProvinceQuery, CitiesPerProvinceQueryVariables>(CitiesPerProvinceDocument, options);
+        }
+export type CitiesPerProvinceQueryHookResult = ReturnType<typeof useCitiesPerProvinceQuery>;
+export type CitiesPerProvinceLazyQueryHookResult = ReturnType<typeof useCitiesPerProvinceLazyQuery>;
+export type CitiesPerProvinceSuspenseQueryHookResult = ReturnType<typeof useCitiesPerProvinceSuspenseQuery>;
+export type CitiesPerProvinceQueryResult = Apollo.QueryResult<CitiesPerProvinceQuery, CitiesPerProvinceQueryVariables>;
+export const AllProvincesDocument = gql`
+    query allProvinces {
+  allProvinces {
+    name
+  }
+}
+    `;
+
+/**
+ * __useAllProvincesQuery__
+ *
+ * To run a query within a React component, call `useAllProvincesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllProvincesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllProvincesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllProvincesQuery(baseOptions?: Apollo.QueryHookOptions<AllProvincesQuery, AllProvincesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllProvincesQuery, AllProvincesQueryVariables>(AllProvincesDocument, options);
+      }
+export function useAllProvincesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllProvincesQuery, AllProvincesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllProvincesQuery, AllProvincesQueryVariables>(AllProvincesDocument, options);
+        }
+export function useAllProvincesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AllProvincesQuery, AllProvincesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AllProvincesQuery, AllProvincesQueryVariables>(AllProvincesDocument, options);
+        }
+export type AllProvincesQueryHookResult = ReturnType<typeof useAllProvincesQuery>;
+export type AllProvincesLazyQueryHookResult = ReturnType<typeof useAllProvincesLazyQuery>;
+export type AllProvincesSuspenseQueryHookResult = ReturnType<typeof useAllProvincesSuspenseQuery>;
+export type AllProvincesQueryResult = Apollo.QueryResult<AllProvincesQuery, AllProvincesQueryVariables>;
+export const AllCitiesDocument = gql`
+    query allCities {
+  allCities {
+    name
+  }
+}
+    `;
+
+/**
+ * __useAllCitiesQuery__
+ *
+ * To run a query within a React component, call `useAllCitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllCitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllCitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllCitiesQuery(baseOptions?: Apollo.QueryHookOptions<AllCitiesQuery, AllCitiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllCitiesQuery, AllCitiesQueryVariables>(AllCitiesDocument, options);
+      }
+export function useAllCitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllCitiesQuery, AllCitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllCitiesQuery, AllCitiesQueryVariables>(AllCitiesDocument, options);
+        }
+export function useAllCitiesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<AllCitiesQuery, AllCitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AllCitiesQuery, AllCitiesQueryVariables>(AllCitiesDocument, options);
+        }
+export type AllCitiesQueryHookResult = ReturnType<typeof useAllCitiesQuery>;
+export type AllCitiesLazyQueryHookResult = ReturnType<typeof useAllCitiesLazyQuery>;
+export type AllCitiesSuspenseQueryHookResult = ReturnType<typeof useAllCitiesSuspenseQuery>;
+export type AllCitiesQueryResult = Apollo.QueryResult<AllCitiesQuery, AllCitiesQueryVariables>;

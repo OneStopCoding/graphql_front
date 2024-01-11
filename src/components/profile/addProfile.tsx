@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import ImageValidation from "../../utility/file/imageValidation";
-import {Profile, useCreateProfileMutation} from "../../generated/graphql";
+import {useCreateProfileMutation} from "../../generated/graphql";
 import {useNavigate} from "react-router-dom";
 import React, {useEffect} from "react";
 import {FormikProvider, useFormik} from "formik";
@@ -11,28 +11,33 @@ import StyledForm from "../common/layout/form";
 import {Alert, Button, TextField} from "@mui/material";
 import Loader from "../common/Loader";
 import IsExistingProfile from "./profileExist";
-import ProfileDetails from "./profileContainer";
+import {CitiesSelect, CountrySelect, ProvinceSelect} from "../../utility/locations/select";
+import {CityValidation, ProvinceValidation} from "../../utility/locations/validations";
 
-const validationSchema = yup.object().shape({
-    firstname: yup.string().required("Please enter a firstname"),
-    lastname: yup.string().required('Please enter a lastname'),
-    bio: yup.string(),
-    profilePic: ImageValidation,
-    images: ImageValidation,
-    city: yup.string(),
-    provence: yup.string(),
-    country: yup.string(),
-    website: yup.string().url(),
-    github: yup.string().url(),
-    twitter: yup.string().url(),
-    instagram: yup.string().url(),
-    fb: yup.string().url()
-})
+
 
 const CreateProfile = () => {
+    const existingProfile = IsExistingProfile()
     const [createProfile, {data, loading, error}] = useCreateProfileMutation({
         fetchPolicy: "network-only"
     })
+    const validationSchema = yup.object().shape({
+        firstname: yup.string(),
+        lastname: yup.string(),
+        bio: yup.string(),
+        profilePic: ImageValidation.required("We like to know who you are. Upload a profile-pic"),
+        images: ImageValidation,
+        city: CityValidation(),
+        provence: ProvinceValidation(),
+        country: yup.string().oneOf(["België", "Nederland", "Luxembourg"], "Enkel landen van de Benelux zijn momenteel toegelaten!"),
+        website: yup.string().url(),
+        github: yup.string().url(),
+        twitter: yup.string().url(),
+        instagram: yup.string().url(),
+        fb: yup.string().url()
+    })
+
+
     const navigate = useNavigate()
     const successUrl = '/profile'
 
@@ -41,57 +46,67 @@ const CreateProfile = () => {
             navigate(successUrl, {replace: true})
         }
     }, [data, navigate])
+    const firstname = existingProfile?.firstname || ""
+    const lastname = existingProfile?.lastname || ""
+    const bio = existingProfile?.bio || ""
+    const oldProfilePic = existingProfile?.profilePic || ""
+    const oldImages = existingProfile?.images || []
+    const city = existingProfile?.location?.city.name || ""
+    const provence = existingProfile?.location?.provence.name || ""
+    const country = existingProfile?.location?.country.name || ""
+    const website = existingProfile?.socials?.website || ""
+    const github = existingProfile?.socials?.github || ""
+    const twitter = existingProfile?.socials?.twitter || ""
+    const instagram = existingProfile?.socials?.instagram || ""
+    const fb = existingProfile?.socials?.fb || ""
+
 
     const profile = useFormik({
         initialValues: {
-            firstname: "",
-            lastname: "",
-            bio: "",
-            profilePic: "",
-            images: [],
-            city: "",
-            provence: "",
-            country: "",
-            website: "",
-            github: "",
-            twitter: "",
-            instagram: "",
-            fb: ""
+            firstname: firstname,
+            lastname: lastname,
+            bio: bio,
+            profilePic: oldProfilePic,
+            images: oldImages,
+            city: city,
+            provence: provence,
+            country: country,
+            website: website,
+            github: github,
+            twitter: twitter,
+            instagram: instagram,
+            fb: fb
         },
         validationSchema,
         onSubmit: async (values) => {
             const images = values.images.length > 0 ? await ImageUrls(values.images) : []
-            console.log("profilePic", values.profilePic[0])
             const profilePic = values.profilePic.length > 0 ? await ImageUrls(Array(values.profilePic[0])) : []
 
             await createProfile({
                 variables: {
-                    firstname: values.firstname === "" ? "null" : values.firstname,
-                    lastname: values.lastname === "" ? "null" : values.lastname,
-                    profilePic: profilePic[0],
-                    images: images,
-                    location: [values.city, values.provence, values.country],
+                    firstname: values.firstname === "" ? firstname : values.firstname,
+                    lastname: values.lastname === "" ? lastname: values.lastname,
+                    profilePic: profilePic[0] === null || profilePic[0] === "" ? oldProfilePic : profilePic[0],
+                    images: images[0] === null ? oldImages : images,
+                    location: [values.city === "" ? city : values.city ,
+                        values.provence === "" ? provence : values.provence
+                        , values.country === "" ? country : values.country],
                     socials: [
-                        values.website === "" ? "null" : values.website,
-                        values.github === "" ? "null" : values.github,
-                        values.twitter === "" ? "null" : values.twitter,
-                        values.instagram === "" ? "null" : values.instagram,
-                        values.fb === "" ? "null" : values.fb
+                        values.website === "" ? website : values.website,
+                        values.github === "" ? github : values.github,
+                        values.twitter === "" ? twitter : values.twitter,
+                        values.instagram === "" ? instagram : values.instagram,
+                        values.fb === "" ? fb : values.fb
                     ],
-                    bio: values.bio,
+                    bio: values.bio === "" ? bio: values.bio,
                 }
             })
+            console.log(data)
         }
     })
-    const existingProfile = IsExistingProfile()
-    if (existingProfile !== null) {
-        return (
-            <Box sx={{textAlign: 'center', marginTop: '2em'}}>
-                <Typography variant='h6'>Profile already exists</Typography>
-                <ProfileDetails profile={existingProfile as Profile} nrOfPosts={3}/>
-            </Box>
-        )
-    }
+const countries = CountrySelect(profile.values.country, profile.handleChange, profile.handleBlur)
+    const provinces = ProvinceSelect(profile.values.provence, profile.values.country, profile.handleChange, profile.handleBlur)
+    const cities = CitiesSelect(profile.values.provence, profile.values.country, profile.values.city, profile.handleChange, profile.handleBlur)
     return (
         <FormikProvider value={profile}>
             <Box sx={{textAlign: 'center', marginTop: '2em'}}>
@@ -100,8 +115,8 @@ const CreateProfile = () => {
                     <StyledForm onSubmit={profile.handleSubmit} method="post">
                         <TextField id='firstname'
                                    name="firstname"
-                                   placeholder="Enter your firstname"
-                                   label="Firstname"
+                                   placeholder={firstname || "Enter your firstname"}
+                                   label={firstname || "Firstname"}
                                    value={profile.values.firstname}
                                    onChange={profile.handleChange}
                                    onBlur={profile.handleBlur}
@@ -113,7 +128,7 @@ const CreateProfile = () => {
                                    type="text"
                                    name="lastname"
                                    placeholder="Enter your lastname"
-                                   label="Lastname"
+                                   label={lastname || "Lastname"}
                                    value={profile.values.lastname}
                                    onChange={profile.handleChange}
                                    onBlur={profile.handleBlur}
@@ -125,7 +140,7 @@ const CreateProfile = () => {
                                    type="text"
                                    name="bio"
                                    placeholder="Enter your Bio"
-                                   label="Bio"
+                                   label={bio || "Bio"}
                                    multiline={true}
                                    rows={6}
                                    value={profile.values.bio}
@@ -135,52 +150,30 @@ const CreateProfile = () => {
                                    error={profile.touched.bio && Boolean(profile.errors.bio)}
                                    helperText={profile.touched.bio && profile.errors.bio}
                                    sx={{marginTop: "10px"}}/>
-                        <label> Upload Profile Picture</label>
+                        <label style={{marginTop:"5%"}}> Upload Profile Picture</label>
                         <input
                             name="image"
                             type="file"
                             onChange={e => profile.setFieldValue("profilePic", e.target.files && e.target.files)}
                         />
-                        <label> Upload Extra Images</label>
+                        <label style={{marginTop:"5%", marginBottom:"2%"}}> Upload Extra Images</label>
                         <input
                             name="image"
                             type="file"
                             multiple
+                            style={{marginBottom: "2%"}}
                             onChange={e => profile.setFieldValue("images", e.target.files && e.target.files)}
                         />
                         {
                             profile.errors.images && <p style={{color: "red"}}>{profile.errors.images}</p>
                         }
 
-                        <TextField id='city'
-                                   type="text"
-                                   name="city"
-                                   placeholder="Enter the city you're at"
-                                   label="City"
-                                   value={profile.values.city}
-                                   onChange={profile.handleChange}
-                                   onBlur={profile.handleBlur}
-                                   variant={'outlined'}
-                                   error={profile.touched.city && Boolean(profile.errors.city)}
-                                   helperText={profile.touched.city && profile.errors.city}
-                                   sx={{marginTop: "10px"}}/>
-                        <TextField id='provence'
-                                   type="text"
-                                   name="provence"
-                                   placeholder="Enter your provence/state"
-                                   label="Provence/State"
-                                   value={profile.values.provence}
-                                   onChange={profile.handleChange}
-                                   onBlur={profile.handleBlur}
-                                   variant={'outlined'}
-                                   error={profile.touched.provence && Boolean(profile.errors.provence)}
-                                   helperText={profile.touched.provence && profile.errors.provence}
-                                   sx={{marginTop: "10px"}}/>
+                        {countries}
                         <TextField id='country'
                                    type="text"
                                    name="country"
                                    placeholder="Enter your country"
-                                   label="Country"
+                                   label={country || "Country"}
                                    value={profile.values.country}
                                    onChange={profile.handleChange}
                                    onBlur={profile.handleBlur}
@@ -188,13 +181,41 @@ const CreateProfile = () => {
                                    error={profile.touched.country && Boolean(profile.errors.country)}
                                    helperText={profile.touched.country && profile.errors.country}
                                    sx={{marginTop: "10px"}}/>
+
+                        {provinces}
+                        <TextField id='provence'
+                                   type="text"
+                                   name="provence"
+                                   placeholder="Enter your provence/state"
+                                   label={provence || "Provence/State"}
+                                   value={profile.values.provence}
+                                   onChange={profile.handleChange}
+                                   onBlur={profile.handleBlur}
+                                   variant={'outlined'}
+                                   error={profile.touched.provence && Boolean(profile.errors.provence)}
+                                   helperText={profile.touched.provence && profile.errors.provence}
+                                   sx={{marginTop: "10px"}}/>
+
+                        {cities}
+                        <TextField id='city'
+                                   type="text"
+                                   name="city"
+                                   placeholder="Enter the city you're at"
+                                   label={city || "City"}
+                                   value={profile.values.city}
+                                   onChange={profile.handleChange}
+                                   onBlur={profile.handleBlur}
+                                   variant={'outlined'}
+                                   error={profile.touched.city && Boolean(profile.errors.city)}
+                                   helperText={profile.touched.city && profile.errors.city}
+                                   sx={{marginTop: "10px"}}/>
                         <TextField id='website'
                                    type="text"
                                    name="website"
-                                   placeholder="Enter your website"
-                                   label={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                               stroke-linecap="round" stroke-linejoin="round"
+                                   placeholder={"Enter your website"}
+                                   label={website !== "" || !website.includes("null") ? website : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                               strokeLinecap="round" strokeLinejoin="round"
                                                className="feather feather-globe mr-2 icon-inline">
                                        <circle cx="12" cy="12" r="10"></circle>
                                        <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -212,9 +233,9 @@ const CreateProfile = () => {
                                    type="text"
                                    name="github"
                                    placeholder="Enter your github"
-                                   label={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                               stroke-linecap="round" stroke-linejoin="round"
+                                   label={github !== "" || !github.includes("null") ? github : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                               strokeLinecap="round" strokeLinejoin="round"
                                                className="feather feather-github mr-2 icon-inline">
                                        <path
                                            d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
@@ -230,9 +251,9 @@ const CreateProfile = () => {
                                    type="text"
                                    name="twitter"
                                    placeholder="Enter your Twitter"
-                                   label={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                               stroke-linecap="round" stroke-linejoin="round"
+                                   label={twitter !== "" || !twitter.includes("null") ? twitter : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                               strokeLinecap="round" strokeLinejoin="round"
                                                className="feather feather-twitter mr-2 icon-inline text-info">
                                        <path
                                            d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
@@ -248,9 +269,9 @@ const CreateProfile = () => {
                                    type="text"
                                    name="instagram"
                                    placeholder="Enter your Instagram"
-                                   label={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                               stroke-linecap="round" stroke-linejoin="round"
+                                   label={instagram !== "" || !twitter.includes("null") ? instagram : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                               strokeLinecap="round" strokeLinejoin="round"
                                                className="feather feather-instagram mr-2 icon-inline text-danger">
                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -267,9 +288,9 @@ const CreateProfile = () => {
                                    type="text"
                                    name="fb"
                                    placeholder="Enter your Facebook"
-                                   label={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                               stroke-linecap="round" stroke-linejoin="round"
+                                   label={fb !== "" || !fb.includes("null") ? fb : <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                               viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                                               strokeLinecap="round" strokeLinejoin="round"
                                                className="feather feather-facebook mr-2 icon-inline text-primary">
                                        <path
                                            d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>

@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from "react";
-import {Button, Card, CardActionArea, CardActions, CardContent, Divider} from "@mui/material";
+import {Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Divider} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {Post, useAddCommentMutation, useDislikeMutation, useLikeMutation} from "../../generated/graphql";
 import CommentList from "./comments/CommentList";
@@ -86,7 +86,10 @@ const dislikes = post.dislikes || []
                     {post.comments && post.comments.length > 0 ? showComments ? 'Hide Comments' : 'Show Comments' : 'No Comments'}
                 </Button>
             </CardActions>
-            <p>{imageUri.length > 0 && imageUri.map(image => <img src={image} alt=""/>)}</p>
+            {imageUri.length > 0 && imageUri.map(image => <CardMedia component="img"
+                                                                     alt=""
+                                                                     width="100%"
+                                                                     image={image}/>)}
 
             <AddComment onSubmit={comment => {
                 addComment({

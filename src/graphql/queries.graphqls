@@ -226,3 +226,81 @@ query allPosts{
         }
     }
 }
+
+query allLocations{
+    allLocations{ city{
+        name
+    }
+        provence{
+            name
+        }
+        country{
+            name
+        }}
+}
+
+query locationsPerCity($city: String!){
+    locationsPerCity(city: $city){
+        city{
+            name
+        }
+        provence{
+            name
+        }
+        country{
+            name
+        }
+    }
+}
+
+query locationsPerProvence($provence: String!){
+    locationsPerProvence(provence: $provence){
+        city{
+            name
+        }
+        provence{
+            name
+        }
+        country{
+            name
+        }
+    }
+}
+
+query locationsPerCountry($country: String!){
+    locationsPerCountry(country: $country){
+        city{
+            name
+        }
+        provence{
+            name
+        }
+        country{
+            name
+        }
+    }
+}
+
+query provincesPerCountry($country: String!){
+    provincesPerCountry(country: $country){
+        name
+    }
+}
+
+query citiesPerProvince($province: String!){
+    citiesPerProvince(province: $province){
+        name
+    }
+}
+
+query allProvinces{
+    allProvinces{
+        name
+    }
+}
+
+query allCities{
+    allCities{
+        name
+    }
+}
