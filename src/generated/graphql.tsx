@@ -76,7 +76,7 @@ export type Location = {
   __typename?: 'Location';
   city: City;
   country: Country;
-  provence: Provence;
+  provence?: Maybe<Provence>;
 };
 
 export type LocationIn = {
@@ -182,7 +182,7 @@ export type Post = {
   dislikes?: Maybe<Array<User>>;
   id: Scalars['ID']['output'];
   images?: Array<Scalars['String']['output']>;
-  likes: Array<Maybe<User>>;
+  likes: Array<User>;
   title: Scalars['String']['output'];
 };
 
@@ -197,6 +197,7 @@ export type Profile = {
   bio?: Maybe<Scalars['String']['output']>;
   firstname?: Maybe<Scalars['String']['output']>;
   followers?: Maybe<Array<Maybe<User>>>;
+  id: Scalars['ID']['output'];
   images?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   lastname?: Maybe<Scalars['String']['output']>;
   location?: Maybe<Location>;
@@ -209,6 +210,7 @@ export type Profile = {
 export type ProfileIn = {
   bio?: InputMaybe<Scalars['String']['input']>;
   firstname: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
   images?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   lastname: Scalars['String']['input'];
   location?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -239,6 +241,7 @@ export type Query = {
   locationsPerCountry: Array<Location>;
   locationsPerProvence: Array<Location>;
   postsForUser?: Maybe<Array<Maybe<Post>>>;
+  profileById?: Maybe<Profile>;
   provincesPerCountry: Array<Provence>;
   recentPost: Array<Post>;
   userByUsername?: Maybe<User>;
@@ -277,6 +280,11 @@ export type QueryLocationsPerProvenceArgs = {
 
 export type QueryPostsForUserArgs = {
   author: Scalars['String']['input'];
+};
+
+
+export type QueryProfileByIdArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -349,7 +357,7 @@ export type FollowMutationVariables = Exact<{
 }>;
 
 
-export type FollowMutation = { __typename?: 'Mutation', follow: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
+export type FollowMutation = { __typename?: 'Mutation', follow: { __typename?: 'Profile', id: string, firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
 export type AddPostMutationVariables = Exact<{
   title: Scalars['String']['input'];
@@ -361,6 +369,7 @@ export type AddPostMutationVariables = Exact<{
 export type AddPostMutation = { __typename?: 'Mutation', addPost: { __typename?: 'Post', title: string, body: string, images?: Array<string | null> | null, author: { __typename?: 'User', username: string }, comments: Array<{ __typename?: 'Comment', text: string, author: { __typename?: 'User', username: string } }> } };
 
 export type CreateProfileMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
   firstname: Scalars['String']['input'];
   lastname: Scalars['String']['input'];
   profilePic?: InputMaybe<Scalars['String']['input']>;
@@ -371,7 +380,7 @@ export type CreateProfileMutationVariables = Exact<{
 }>;
 
 
-export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
+export type CreateProfileMutation = { __typename?: 'Mutation', createProfile: { __typename?: 'Profile', id: string, firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
 export type SendDmMutationVariables = Exact<{
   title?: InputMaybe<Scalars['String']['input']>;
@@ -381,7 +390,7 @@ export type SendDmMutationVariables = Exact<{
 }>;
 
 
-export type SendDmMutation = { __typename?: 'Mutation', sendDM: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
+export type SendDmMutation = { __typename?: 'Mutation', sendDM: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
 export type AddCommentMutationVariables = Exact<{
   text: Scalars['String']['input'];
@@ -424,7 +433,7 @@ export type UnFollowMutationVariables = Exact<{
 }>;
 
 
-export type UnFollowMutation = { __typename?: 'Mutation', unFollow: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
+export type UnFollowMutation = { __typename?: 'Mutation', unFollow: { __typename?: 'Profile', id: string, firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
 export type LikeMutationVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -467,19 +476,26 @@ export type AllUsersQuery = { __typename?: 'Query', allUsers: Array<{ __typename
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', getProfile: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
+export type GetProfileQuery = { __typename?: 'Query', getProfile: { __typename?: 'Profile', id: string, firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } };
 
 export type GetProfileByUsernameQueryVariables = Exact<{
   username: Scalars['String']['input'];
 }>;
 
 
-export type GetProfileByUsernameQuery = { __typename?: 'Query', getProfileByUsername?: { __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null };
+export type GetProfileByUsernameQuery = { __typename?: 'Query', getProfileByUsername?: { __typename?: 'Profile', id: string, firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null };
 
 export type GetAllProfilesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllProfilesQuery = { __typename?: 'Query', allProfile: Array<{ __typename?: 'Profile', firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null }> };
+export type GetAllProfilesQuery = { __typename?: 'Query', allProfile: Array<{ __typename?: 'Profile', id: string, firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null }> };
+
+export type ProfileByIdQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type ProfileByIdQuery = { __typename?: 'Query', profileById?: { __typename?: 'Profile', id: string, firstname?: string | null, lastname?: string | null, profilePic?: string | null, images?: Array<string | null> | null, bio?: string | null, user: { __typename?: 'User', email: string, username: string, password: string, roles?: string | null }, location?: { __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } } | null, socials?: { __typename?: 'Socials', website?: string | null, github?: string | null, twitter?: string | null, instagram?: string | null, fb?: string | null } | null, followers?: Array<{ __typename?: 'User', username: string } | null> | null, messages?: Array<{ __typename?: 'DM', title?: string | null, text: string, images?: Array<string | null> | null, read: boolean, sender: { __typename?: 'User', username: string }, receiver: { __typename?: 'User', username: string } } | null> | null } | null };
 
 export type GetDmQueryVariables = Exact<{
   title: Scalars['String']['input'];
@@ -501,28 +517,28 @@ export type AllPostsQuery = { __typename?: 'Query', allPosts: Array<{ __typename
 export type AllLocationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllLocationsQuery = { __typename?: 'Query', allLocations: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } }> };
+export type AllLocationsQuery = { __typename?: 'Query', allLocations: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } }> };
 
 export type LocationsPerCityQueryVariables = Exact<{
   city: Scalars['String']['input'];
 }>;
 
 
-export type LocationsPerCityQuery = { __typename?: 'Query', locationsPerCity: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } }> };
+export type LocationsPerCityQuery = { __typename?: 'Query', locationsPerCity: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } }> };
 
 export type LocationsPerProvenceQueryVariables = Exact<{
   provence: Scalars['String']['input'];
 }>;
 
 
-export type LocationsPerProvenceQuery = { __typename?: 'Query', locationsPerProvence: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } }> };
+export type LocationsPerProvenceQuery = { __typename?: 'Query', locationsPerProvence: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } }> };
 
 export type LocationsPerCountryQueryVariables = Exact<{
   country: Scalars['String']['input'];
 }>;
 
 
-export type LocationsPerCountryQuery = { __typename?: 'Query', locationsPerCountry: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence: { __typename?: 'Provence', name: string }, country: { __typename?: 'Country', name: string } }> };
+export type LocationsPerCountryQuery = { __typename?: 'Query', locationsPerCountry: Array<{ __typename?: 'Location', city: { __typename?: 'City', name: string }, provence?: { __typename?: 'Provence', name: string } | null, country: { __typename?: 'Country', name: string } }> };
 
 export type ProvincesPerCountryQueryVariables = Exact<{
   country: Scalars['String']['input'];
@@ -619,6 +635,7 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutatio
 export const FollowDocument = gql`
     mutation follow($username: String!) {
   follow(username: $username) {
+    id
     firstname
     lastname
     profilePic
@@ -739,10 +756,11 @@ export type AddPostMutationHookResult = ReturnType<typeof useAddPostMutation>;
 export type AddPostMutationResult = Apollo.MutationResult<AddPostMutation>;
 export type AddPostMutationOptions = Apollo.BaseMutationOptions<AddPostMutation, AddPostMutationVariables>;
 export const CreateProfileDocument = gql`
-    mutation createProfile($firstname: String!, $lastname: String!, $profilePic: String, $images: [String], $location: [String], $socials: [String], $bio: String) {
+    mutation createProfile($id: ID!, $firstname: String!, $lastname: String!, $profilePic: String, $images: [String], $location: [String], $socials: [String], $bio: String) {
   createProfile(
-    profile: {firstname: $firstname, lastname: $lastname, profilePic: $profilePic, images: $images, location: $location, socials: $socials, bio: $bio}
+    profile: {id: $id, firstname: $firstname, lastname: $lastname, profilePic: $profilePic, images: $images, location: $location, socials: $socials, bio: $bio}
   ) {
+    id
     firstname
     lastname
     profilePic
@@ -805,6 +823,7 @@ export type CreateProfileMutationFn = Apollo.MutationFunction<CreateProfileMutat
  * @example
  * const [createProfileMutation, { data, loading, error }] = useCreateProfileMutation({
  *   variables: {
+ *      id: // value for 'id'
  *      firstname: // value for 'firstname'
  *      lastname: // value for 'lastname'
  *      profilePic: // value for 'profilePic'
@@ -1075,6 +1094,7 @@ export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMut
 export const UnFollowDocument = gql`
     mutation unFollow($username: String!) {
   unFollow(username: $username) {
+    id
     firstname
     lastname
     profilePic
@@ -1441,6 +1461,7 @@ export type AllUsersQueryResult = Apollo.QueryResult<AllUsersQuery, AllUsersQuer
 export const GetProfileDocument = gql`
     query getProfile {
   getProfile {
+    id
     firstname
     lastname
     profilePic
@@ -1523,6 +1544,7 @@ export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfi
 export const GetProfileByUsernameDocument = gql`
     query getProfileByUsername($username: String!) {
   getProfileByUsername(username: $username) {
+    id
     firstname
     lastname
     profilePic
@@ -1606,6 +1628,7 @@ export type GetProfileByUsernameQueryResult = Apollo.QueryResult<GetProfileByUse
 export const GetAllProfilesDocument = gql`
     query getAllProfiles {
   allProfile {
+    id
     firstname
     lastname
     profilePic
@@ -1685,6 +1708,90 @@ export type GetAllProfilesQueryHookResult = ReturnType<typeof useGetAllProfilesQ
 export type GetAllProfilesLazyQueryHookResult = ReturnType<typeof useGetAllProfilesLazyQuery>;
 export type GetAllProfilesSuspenseQueryHookResult = ReturnType<typeof useGetAllProfilesSuspenseQuery>;
 export type GetAllProfilesQueryResult = Apollo.QueryResult<GetAllProfilesQuery, GetAllProfilesQueryVariables>;
+export const ProfileByIdDocument = gql`
+    query profileById($id: ID!) {
+  profileById(id: $id) {
+    id
+    firstname
+    lastname
+    profilePic
+    images
+    user {
+      email
+      username
+      password
+      roles
+    }
+    location {
+      city {
+        name
+      }
+      provence {
+        name
+      }
+      country {
+        name
+      }
+    }
+    socials {
+      website
+      github
+      twitter
+      instagram
+      fb
+    }
+    bio
+    followers {
+      username
+    }
+    messages {
+      sender {
+        username
+      }
+      receiver {
+        username
+      }
+      title
+      text
+      images
+      read
+    }
+  }
+}
+    `;
+
+/**
+ * __useProfileByIdQuery__
+ *
+ * To run a query within a React component, call `useProfileByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfileByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useProfileByIdQuery(baseOptions: Apollo.QueryHookOptions<ProfileByIdQuery, ProfileByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ProfileByIdQuery, ProfileByIdQueryVariables>(ProfileByIdDocument, options);
+      }
+export function useProfileByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProfileByIdQuery, ProfileByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ProfileByIdQuery, ProfileByIdQueryVariables>(ProfileByIdDocument, options);
+        }
+export function useProfileByIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<ProfileByIdQuery, ProfileByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<ProfileByIdQuery, ProfileByIdQueryVariables>(ProfileByIdDocument, options);
+        }
+export type ProfileByIdQueryHookResult = ReturnType<typeof useProfileByIdQuery>;
+export type ProfileByIdLazyQueryHookResult = ReturnType<typeof useProfileByIdLazyQuery>;
+export type ProfileByIdSuspenseQueryHookResult = ReturnType<typeof useProfileByIdSuspenseQuery>;
+export type ProfileByIdQueryResult = Apollo.QueryResult<ProfileByIdQuery, ProfileByIdQueryVariables>;
 export const GetDmDocument = gql`
     query getDM($title: String!) {
   getDM(title: $title) {

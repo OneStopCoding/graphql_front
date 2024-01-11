@@ -13,6 +13,7 @@ import Loader from "../common/Loader";
 import IsExistingProfile from "./profileExist";
 import {CitiesSelect, CountrySelect, ProvinceSelect} from "../../utility/locations/select";
 import {CityValidation, ProvinceValidation} from "../../utility/locations/validations";
+import { v4 as uuidv4 } from "uuid";
 
 
 
@@ -46,14 +47,15 @@ const CreateProfile = () => {
             navigate(successUrl, {replace: true})
         }
     }, [data, navigate])
+    const id = existingProfile?.id || uuidv4()
     const firstname = existingProfile?.firstname || ""
     const lastname = existingProfile?.lastname || ""
     const bio = existingProfile?.bio || ""
     const oldProfilePic = existingProfile?.profilePic || ""
     const oldImages = existingProfile?.images || []
-    const city = existingProfile?.location?.city.name || ""
-    const provence = existingProfile?.location?.provence.name || ""
-    const country = existingProfile?.location?.country.name || ""
+    const city = existingProfile?.location?.city?.name || ""
+    const provence = existingProfile?.location?.provence?.name || ""
+    const country = existingProfile?.location?.country?.name || ""
     const website = existingProfile?.socials?.website || ""
     const github = existingProfile?.socials?.github || ""
     const twitter = existingProfile?.socials?.twitter || ""
@@ -81,9 +83,10 @@ const CreateProfile = () => {
         onSubmit: async (values) => {
             const images = values.images.length > 0 ? await ImageUrls(values.images) : []
             const profilePic = values.profilePic.length > 0 ? await ImageUrls(Array(values.profilePic[0])) : []
-
+console.log("id: ", id)
             await createProfile({
                 variables: {
+                    id: id,
                     firstname: values.firstname === "" ? firstname : values.firstname,
                     lastname: values.lastname === "" ? lastname: values.lastname,
                     profilePic: profilePic[0] === null || profilePic[0] === "" ? oldProfilePic : profilePic[0],
@@ -186,8 +189,8 @@ const countries = CountrySelect(profile.values.country, profile.handleChange, pr
                         <TextField id='provence'
                                    type="text"
                                    name="provence"
-                                   placeholder="Enter your provence/state"
-                                   label={provence || "Provence/State"}
+                                   placeholder="Enter your province/state"
+                                   label={provence || "Province/State"}
                                    value={profile.values.provence}
                                    onChange={profile.handleChange}
                                    onBlur={profile.handleBlur}

@@ -29,7 +29,7 @@ export const ProvinceValidation = () =>{
     const provinces = GetProvinces()
     return yup.string()
         .test("Is_ONE_OF", "This is not a valid provence!!",
-            province => province !== undefined && provinces.includes(province))
+            provence => provence !== undefined && provinces.includes(provence))
 }
 
 export const CityValidation = () =>{

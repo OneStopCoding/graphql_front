@@ -16,6 +16,7 @@ mutation register($email: String!, $username: String!, $password: String!){
 
 mutation follow($username: String!){
     follow(username: $username){
+        id
         firstname
         lastname
         profilePic
@@ -81,9 +82,10 @@ mutation addPost($title: String!, $body: String!, $images: [String]){
     }
 }
 
-mutation createProfile($firstname: String!, $lastname: String!, $profilePic: String, $images: [String],
+mutation createProfile($id:ID!, $firstname: String!, $lastname: String!, $profilePic: String, $images: [String],
     $location: [String], $socials: [String], $bio: String){
     createProfile(profile:{
+        id: $id
         firstname: $firstname
         lastname: $lastname
         profilePic: $profilePic
@@ -92,6 +94,7 @@ mutation createProfile($firstname: String!, $lastname: String!, $profilePic: Str
         socials: $socials
         bio: $bio
     }){
+        id
         firstname
         lastname
         profilePic
@@ -229,6 +232,7 @@ mutation deleteUser($id: ID!){
 
 mutation unFollow($username: String!){
     unFollow(username: $username){
+        id
         firstname
         lastname
         profilePic

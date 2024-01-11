@@ -48,6 +48,7 @@ query allUsers{
 
 query getProfile{
     getProfile{
+        id
         firstname
         lastname
         profilePic
@@ -93,6 +94,7 @@ query getProfile{
 
 query getProfileByUsername($username: String!){
     getProfileByUsername(username: $username){
+        id
         firstname
         lastname
         profilePic
@@ -136,6 +138,51 @@ query getProfileByUsername($username: String!){
 
 query getAllProfiles{
     allProfile{
+        id
+        firstname
+        lastname
+        profilePic
+        images
+        user{
+            email
+            username
+            password
+            roles
+        }
+        location{
+            city{
+                name
+            }
+            provence{
+                name
+            }
+            country{
+                name
+            }
+        }
+        socials{
+            website
+            github
+            twitter
+            instagram
+            fb
+        }
+        bio
+        followers{username}
+        messages{
+            sender{username}
+            receiver{username}
+            title
+            text
+            images
+            read
+        }
+    }
+}
+
+query profileById($id: ID!){
+    profileById(id: $id){
+        id
         firstname
         lastname
         profilePic
